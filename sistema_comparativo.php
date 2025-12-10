@@ -1,5 +1,33 @@
 <?php
-// Cargar clases necesarias
+/**
+ * SISTEMA_COMPARATIVO.PHP - APLICACIÓN PRINCIPAL
+ * =============================================
+ * Controlador central que orquesta todo el sistema
+ * 
+ * RESPONSABILIDADES (BACKEND):
+ * 1. RECEPCIÓN: Procesar datos POST del formulario
+ * 2. VALIDACIÓN: Verificar matriz, vector, parámetros
+ * 3. EJECUCIÓN: Resolver con ambos métodos (Jacobi y Gauss-Seidel)
+ * 4. ANÁLISIS: Comparar resultados y generar insights
+ * 5. RESPUESTA: HTML con gráficas, tablas, análisis
+ * 
+ * FLUJO:
+ * 1. Usuario ingresa matrix A, vector b, parámetros en formulario
+ * 2. POST → sistema_comparativo.php (AQUÍ)
+ * 3. Backend valida y ejecuta ambos métodos
+ * 4. Crea análisis comparativo exhaustivo
+ * 5. Renderiza página con resultados visuales
+ * 
+ * DEPENDENCIAS EXTERNAS (Cargan clases PHP):
+ * - Jacobi.php: implementación del método iterativo Jacobi
+ * - GaussSeidel.php: implementación mejorada Gauss-Seidel
+ * - Comparador.php: análisis comparativo de resultados
+ * - Validador.php: verificación de integridad
+ * - AnalizadorAvanzado.php: análisis matemático profundo
+ * - CasosPrueba.php: suite de 7 casos predefinidos
+ */
+
+// ============== CARGAR TODAS LAS CLASES ==============
 require_once __DIR__ . '/clases/Jacobi.php';
 require_once __DIR__ . '/clases/GaussSeidel.php';
 require_once __DIR__ . '/clases/Comparador.php';
@@ -7,45 +35,53 @@ require_once __DIR__ . '/clases/Validador.php';
 require_once __DIR__ . '/clases/AnalizadorAvanzado.php';
 require_once __DIR__ . '/clases/CasosPrueba.php';
 
-// Variables para resultados
-$resultados = null;
-$error_msg = null;
-$advertencias = [];
-$json_resultado = null;
+// ============== VARIABLES GLOBALES ==============
+// Almacenan resultados de la ejecución
+$resultados = null;         // Datos principales de ambos métodos
+$error_msg = null;          // Mensaje de error si falla
+$advertencias = [];         // Advertencias no críticas
+$json_resultado = null;     // JSON con datos para gráficas JavaScript
 
-// Procesar formulario
+// ============== PROCESAR FORMULARIO ==============
+// Si fue POST (usuario envió formulario)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Obtener y validar dimensión
         $n = intval($_POST['dimension']);
         
         if ($n < 2 || $n > 20) {
             throw new Exception("La dimensión debe estar entre 2 y 20");
         }
         
-        // Construir matriz A
+        // ===== CONSTRUIR MATRIZ A (n×n) =====
         $matriz_A = [];
         for ($i = 0; $i < $n; $i++) {
             $matriz_A[$i] = [];
             for ($j = 0; $j < $n; $j++) {
+                // POST contiene: a_0_0, a_0_1, ..., a_n-1_n-1
                 $valor = floatval($_POST["a_{$i}_{$j}"]);
                 $matriz_A[$i][$j] = $valor;
             }
         }
         
-        // Construir vector b
+        // ===== CONSTRUIR VECTOR B (n×1) =====
         $vector_b = [];
         for ($i = 0; $i < $n; $i++) {
+            // POST contiene: b_0, b_1, ..., b_n-1
             $vector_b[$i] = floatval($_POST["b_{$i}"]);
         }
         
-        $tolerancia = floatval($_POST['tolerancia']);
-        $max_iter = intval($_POST['max_iteraciones']);
+        // ===== OBTENER PARÁMETROS NUMÉRICOS =====
+        $tolerancia = floatval($_POST['tolerancia']);      // Error máximo permitido
+        $max_iter = intval($_POST['max_iteraciones']);     // Límite de iteraciones
         
-        // Validación
+        // ===== VALIDACIÓN EXHAUSTIVA =====
+        // Verifica: matriz cuadrada, diagonal no nula, vector compatible, parámetros válidos
         $validacion = Validador::validarSistemaCompleto($matriz_A, $vector_b, $tolerancia, $max_iter);
-        $advertencias = $validacion['advertencias'];
+        $advertencias = $validacion['advertencias'];  // Guardar advertencias para mostrar
         
-        // Vector inicial
+        // ===== VECTOR INICIAL (OPCIONAL) =====
+        // Usuario puede especificar x^(0) custom o usar [0, 0, ..., 0]
         $x_inicial = null;
         if (!empty($_POST['usar_x_inicial'])) {
             $x_inicial = [];
@@ -54,49 +90,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // Ejecutar métodos
+        // ===== EJECUTAR MÉTODO JACOBI =====
         $jacobi = new Jacobi($matriz_A, $vector_b, $tolerancia, $max_iter, $x_inicial);
-        $jacobi->resolver();
+        $jacobi->resolver();  // Itera hasta convergencia o max_iteraciones
         
+        // ===== EJECUTAR MÉTODO GAUSS-SEIDEL =====
         $gauss_seidel = new GaussSeidel($matriz_A, $vector_b, $tolerancia, $max_iter, $x_inicial);
-        $gauss_seidel->resolver();
+        $gauss_seidel->resolver();  // Itera hasta convergencia o max_iteraciones
         
-        // Análisis
+        // ===== ANÁLISIS COMPARATIVO =====
+        // Compara: iteraciones, tiempo, memoria, error, eficiencia
         $comparador = new Comparador($jacobi, $gauss_seidel, $matriz_A);
         $analisis = $comparador->generarAnalisis();
         
+        // ===== ANÁLISIS MATEMÁTICO AVANZADO =====
+        // Estima: tasa lineal, radio espectral, estabilidad, residuos
         $analizador = new AnalizadorAvanzado($jacobi, $gauss_seidel, $matriz_A, $vector_b);
         $analisis_avanzado = $analizador->analizarConvergencia();
-        $residuos = $analizador->calcularResiduos();
+        $residuos = $analizador->calcularResiduos();  // ||Ax - b|| para ambos
         
+        // ===== EMPAQUETAR RESULTADOS =====
         $resultados = [
-            'jacobi' => $jacobi,
-            'gauss_seidel' => $gauss_seidel,
-            'analisis' => $analisis,
-            'analisis_avanzado' => $analisis_avanzado,
-            'residuos' => $residuos,
-            'tipo_matriz' => $comparador->getTipoMatriz(),
-            'matriz_A' => $matriz_A,
-            'vector_b' => $vector_b
+            'jacobi' => $jacobi,                          // Objeto Jacobi con getters
+            'gauss_seidel' => $gauss_seidel,              // Objeto GaussSeidel con getters
+            'analisis' => $analisis,                      // Comparación cuantitativa
+            'analisis_avanzado' => $analisis_avanzado,    // Análisis matemático
+            'residuos' => $residuos,                      // ||Ax-b|| para verificación
+            'tipo_matriz' => $comparador->getTipoMatriz(),// Propiedades de matriz
+            'matriz_A' => $matriz_A,                      // Matriz original (para mostrar)
+            'vector_b' => $vector_b                       // Vector original (para mostrar)
         ];
         
-        // JSON para JavaScript
+        // ===== GENERAR JSON PARA GRÁFICAS JAVASCRIPT =====
+        // Chart.js necesita arrays de errores para graficar convergencia
         $json_resultado = json_encode([
-            'errores_jacobi' => $jacobi->getErrores(),
-            'errores_gs' => $gauss_seidel->getErrores(),
-            'iter_jacobi' => $jacobi->getIteraciones(),
-            'iter_gs' => $gauss_seidel->getIteraciones(),
-            'tiempo_jacobi' => $jacobi->getTiempoEjecucion(),
-            'tiempo_gs' => $gauss_seidel->getTiempoEjecucion(),
-            'memoria_jacobi' => $jacobi->getMemoriaUsada(),
-            'memoria_gs' => $gauss_seidel->getMemoriaUsada()
+            'errores_jacobi' => $jacobi->getErrores(),        // [e0, e1, e2, ...]
+            'errores_gs' => $gauss_seidel->getErrores(),      // [e0, e1, e2, ...]
+            'iter_jacobi' => $jacobi->getIteraciones(),       // Número de iteraciones
+            'iter_gs' => $gauss_seidel->getIteraciones(),     // Número de iteraciones
+            'tiempo_jacobi' => $jacobi->getTiempoEjecucion(), // ms
+            'tiempo_gs' => $gauss_seidel->getTiempoEjecucion(), // ms
+            'memoria_jacobi' => $jacobi->getMemoriaUsada(),   // KB
+            'memoria_gs' => $gauss_seidel->getMemoriaUsada()  // KB
         ]);
         
     } catch (Exception $e) {
+        // Si algo falla, capturar el error y mostrar al usuario
         $error_msg = $e->getMessage();
     }
 }
 
+// ===== OBTENER CASOS DE PRUEBA DISPONIBLES =====
+// Para el selector de casos predefinidos (7 casos)
 $casos_prueba = CasosPrueba::obtenerTodos();
 ?>
 <!DOCTYPE html>

@@ -1,7 +1,25 @@
 <?php
 /**
- * bienvenida.php
- * Página de presentación inicial del sistema
+ * BIENVENIDA.PHP - PÁGINA DE INTRODUCCIÓN Y SELECTOR DE CASOS
+ * ===========================================================
+ * Primera página del sistema que el usuario ve después de index.php
+ * 
+ * RESPONSABILIDADES:
+ * 1. Bienvenida con descripción del proyecto
+ * 2. Explicación de Jacobi y Gauss-Seidel
+ * 3. Selector de casos de prueba predefinidos (7 casos)
+ * 4. Opción para ingresar sistema manual
+ * 5. Enlace al sistema completo de comparación
+ * 
+ * FLUJO DE USUARIO:
+ * index.php (presentación) → bienvenida.php (introducción) →
+ * → sistema_comparativo.php (análisis interactivo)
+ * 
+ * ELEMENTOS:
+ * - Tarjetas informativas de métodos
+ * - Listado de casos de prueba con descripciones
+ * - Formulario para seleccionar caso
+ * - Botones de acción (Seleccionar caso / Formulario manual)
  */
 ?>
 <!DOCTYPE html>
@@ -10,14 +28,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Comparativo - Jacobi vs Gauss-Seidel</title>
+    <!-- Chart.js para gráficas de convergencia -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* ==================== ESTILOS GLOBALES ==================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        /* Tema azul marino profesional con gradiente */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0a3d62 0%, #1a5276 50%, #154360 100%);

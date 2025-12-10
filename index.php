@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Métodos Iterativos - Jacobi vs Gauss-Seidel</title>
     <style>
+        /* ==================== ESTILOS GLOBALES ==================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        /* PALETA DE COLORES - Tema Azul Marino Profesional */
+        /* Colores: Azul muy oscuro (#0a3d62), Azul marino (#1a5276), Azul medio (#154360) */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0a3d62 0%, #1a5276 50%, #154360 100%);
@@ -211,10 +214,16 @@
     </style>
 </head>
 <body>
+    <!-- ==================== SECCIÓN PRINCIPAL / HERO ==================== -->
+    <!-- Página de bienvenida con presentación de los dos métodos -->
+    <!-- Incluye: Título, subtítulo, comparación rápida, enlace a sistema completo -->
+    
     <div class="hero-container">
         <h1>Métodos Iterativos</h1>
         <p class="subtitle">Comparación detallada entre Jacobi y Gauss-Seidel para resolver sistemas de ecuaciones lineales</p>
         
+        <!-- ==================== TARJETAS COMPARATIVAS ==================== -->
+        <!-- Muestra características principales de cada método lado a lado -->
         <div class="diferencias">
             <div class="metodo-card">
                 <h3>Método de Jacobi</h3>
@@ -239,11 +248,14 @@
             </div>
         </div>
         
+        <!-- ==================== BOTÓN DE LLAMADA A ACCIÓN ==================== -->
+        <!-- Enlace para acceder al sistema completo de comparación -->
         <div class="cta-container">
             <a href="bienvenida.php" class="cta-button">Explorar el Sistema Completo</a>
         </div>
         
-        <!-- Sección de Créditos -->
+        <!-- ==================== SECCIÓN DE CRÉDITOS ==================== -->
+        <!-- Información de autores y contexto académico del proyecto -->
         <div class="credits-section">
             <div class="credits-title">Autoría y Contexto Académico</div>
             

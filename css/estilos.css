@@ -1,55 +1,94 @@
-/* Estilos básicos */
-body { font-family: Arial, sans-serif; background:#f7f7f7; color:#222; }
-main { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
-textarea { width:100%; font-family:monospace; }
-
 /**
- * estilos.css - Estilos adicionales y mejoras
+ * ESTILOS.CSS - HOJA DE ESTILOS PRINCIPAL
+ * ======================================
+ * Define diseño, colores, tipografía y responsividad
+ * 
+ * PALETA DE COLORES TEMÁTICA:
+ * - Azul marino oscuro: #0a3d62 (fondo principal)
+ * - Azul marino: #1a5276 (acentos)
+ * - Azul oscuro: #154360 (botones, énfasis)
+ * - Gris claro: #f7f7f7 (fondos secundarios)
+ * - Blanco: #ffffff (texto sobre azul)
+ * - Gris oscuro: #222 (texto sobre blanco)
+ * 
+ * COMPONENTES:
+ * - Estilos globales (body, main)
+ * - Animaciones (slideIn, fadeIn)
+ * - Scrollbar personalizada
+ * - Responsividad (media queries)
  */
 
-/* Animaciones suaves */
+/* ==================== ESTILOS GLOBALES ==================== */
+/* Estilos base para toda la aplicación */
+body { 
+    font-family: Arial, sans-serif; 
+    background: #f7f7f7;          /* Gris muy claro */
+    color: #222;                  /* Gris oscuro para texto */
+}
+
+/* Contenedor principal */
+main { 
+    max-width: 800px;             /* Ancho máximo de contenido */
+    margin: 40px auto;            /* Centro con margen arriba/abajo */
+    padding: 20px;                /* Espacio interno */
+    background: #fff;             /* Blanco */
+    border-radius: 6px;           /* Esquinas redondeadas */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);  /* Sombra sutil */
+}
+
+/* Áreas de texto (para entrada de matrices) */
+textarea { 
+    width: 100%;                  /* Ancho completo */
+    font-family: monospace;       /* Tipografía monoespaciada (números alineados) */
+}
+
+/* ==================== ANIMACIONES ==================== */
+/* Entrada suave desde la izquierda */
 @keyframes slideIn {
     from {
-        opacity: 0;
-        transform: translateX(-20px);
+        opacity: 0;                /* Invisible */
+        transform: translateX(-20px);  /* Desplazado 20px a la izquierda */
     }
     to {
-        opacity: 1;
-        transform: translateX(0);
+        opacity: 1;                /* Visible */
+        transform: translateX(0);  /* Posición normal */
     }
 }
 
+/* Decoloración suave */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; }           /* Invisible */
+    to { opacity: 1; }             /* Visible */
 }
 
-/* Scrollbar personalizada */
+/* ==================== SCROLLBAR PERSONALIZADA ==================== */
+/* Estilos para la barra de desplazamiento vertical (navegadores WebKit) */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 10px;                  /* Ancho de la scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #f1f1f1;          /* Fondo del carril */
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 5px;
+    background: #667eea;          /* Color del deslizador (azul) */
+    border-radius: 5px;           /* Esquinas redondeadas */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #764ba2;
+    background: #764ba2;          /* Color al pasar mouse (púrpura más oscuro) */
 }
 
-/* Media queries para responsividad */
+/* ==================== RESPONSIVIDAD ==================== */
+/* Tablets y pantallas medianas (1024px) */
 @media (max-width: 1024px) {
     .comparativa {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr !important;  /* Una columna en lugar de dos */
     }
     
     .ejemplos {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr !important;  /* Una columna en lugar de dos */
     }
 }
 
