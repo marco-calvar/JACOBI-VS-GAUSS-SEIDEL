@@ -1,13 +1,36 @@
 <?php
 /**
- * Clase Comparador
- * Realiza el análisis comparativo entre los métodos de Jacobi y Gauss-Seidel
+ * CLASE COMPARADOR - ANÁLISIS COMPARATIVO
+ * ======================================
+ * Realiza análisis exhaustivo entre métodos de Jacobi y Gauss-Seidel
+ * 
+ * PARÁMETROS COMPARADOS:
+ * 1. CONVERGENCIA: ¿Ambos convergen? ¿Uno falla?
+ * 2. ITERACIONES: Cantidad de iteraciones requeridas
+ * 3. VELOCIDAD: Tiempo de ejecución en milisegundos
+ * 4. MEMORIA: Consumo de memoria en kilobytes
+ * 5. ERROR: Error relativo final
+ * 6. EFICIENCIA: Score combinado de todos los factores
+ * 7. RECOMENDACIONES: Cuál usar y por qué
+ * 
+ * SALIDA:
+ * - Array asociativo con análisis detallado
+ * - Matriz de puntos para ranking
+ * - Recomendaciones cualitativas basadas en propiedades de matriz
  */
 class Comparador {
-    private $jacobi;
-    private $gauss_seidel;
-    private $matriz_A;
+    private $jacobi;           // Objeto Jacobi con resultados
+    private $gauss_seidel;     // Objeto GaussSeidel con resultados
+    private $matriz_A;         // Matriz original para análisis
     
+    /**
+     * CONSTRUCTOR
+     * Inicializa el comparador con dos métodos ya ejecutados
+     * 
+     * @param Jacobi $jacobi           Instancia de Jacobi con resolver() ejecutado
+     * @param GaussSeidel $gauss_seidel Instancia de GaussSeidel con resolver() ejecutado
+     * @param array $matriz_A           Matriz original A para análisis de propiedades
+     */
     public function __construct($jacobi, $gauss_seidel, $matriz_A) {
         $this->jacobi = $jacobi;
         $this->gauss_seidel = $gauss_seidel;
@@ -15,7 +38,21 @@ class Comparador {
     }
     
     /**
-     * Genera análisis comparativo completo
+     * GENERA ANÁLISIS COMPARATIVO COMPLETO
+     * Extrae resultados de ambos métodos y crea análisis exhaustivo
+     * 
+     * ESTRUCTURA DEL ANÁLISIS RETORNADO:
+     * {
+     *   'convergencia': { jacobi: bool, gauss_seidel: bool },
+     *   'iteraciones': { jacobi: int, gauss_seidel: int, diferencia: int },
+     *   'tiempo': { jacobi: float ms, gauss_seidel: float ms, mas_rapido: string },
+     *   'memoria': { jacobi: float KB, gauss_seidel: float KB, diferencia: float },
+     *   'error_final': { jacobi: float, gauss_seidel: float },
+     *   'eficiencia': { jacobi: score, gauss_seidel: score, mas_eficiente: string },
+     *   'recomendacion': [ strings con análisis cualitativo ]
+     * }
+     * 
+     * @return array Análisis comparativo completo
      */
     public function generarAnalisis() {
         $analisis = [];
@@ -66,7 +103,21 @@ class Comparador {
     }
     
     /**
-     * Calcula la eficiencia de cada método
+     * CALCULA EFICIENCIA RELATIVA
+     * Otorga puntos basados en desempeño en 3 criterios
+     * 
+     * CRITERIOS (1 punto cada uno):
+     * 1. ITERACIONES: Menor cantidad gana punto
+     * 2. TIEMPO: Menor ejecución gana punto
+     * 3. CONVERGENCIA: Converger gana punto
+     * 
+     * SCORE TOTAL:
+     * - 3 puntos: Mejor en todo
+     * - 2 puntos: Mejor en 2/3 criterios
+     * - 1 punto: Mejor en 1/3 criterios
+     * - 0 puntos: Peor en todo
+     * 
+     * @return array { jacobi: int 0-3, gauss_seidel: int 0-3, mas_eficiente: string }
      */
     private function calcularEficiencia() {
         $iter_j = $this->jacobi->getIteraciones();
@@ -95,7 +146,21 @@ class Comparador {
     }
     
     /**
-     * Genera recomendaciones basadas en el análisis
+     * GENERA RECOMENDACIONES CUALITATIVAS
+     * Analiza propiedades de matriz e interpreta resultados
+     * 
+     * ANÁLISIS REALIZA:
+     * 1. Verificación de dominancia diagonal (garantía de convergencia)
+     * 2. Comparación de velocidad de convergencia
+     * 3. Evaluación de cuál usar según propiedades
+     * 4. Consideraciones de paralelización
+     * 
+     * RECOMENDACIONES TÍPICAS:
+     * - "Gauss-Seidel convergió X% más rápido"
+     * - "La matriz es diagonalmente dominante"
+     * - "Para matrices grandes, Jacobi es paralelizable"
+     * 
+     * @return array Array de recomendaciones en forma de strings legibles
      */
     private function generarRecomendacion() {
         $recomendaciones = [];
@@ -145,7 +210,24 @@ class Comparador {
     }
     
     /**
-     * Obtiene el tipo de matriz
+     * OBTIENE TIPO Y PROPIEDADES DE MATRIZ
+     * Realiza análisis estructural de la matriz para categorización
+     * 
+     * VERIFICA:
+     * 1. Dominancia diagonal (criterio de convergencia)
+     * 2. Simetría (propiedad algebraica importante)
+     * 3. Tamaño: Pequeña (n≤5), Mediana (5<n≤20), Grande (n>20)
+     * 
+     * RETORNA:
+     * String con propiedades separadas por comas
+     * Ejemplo: "Diagonalmente Dominante, Simétrica, Mediana (5<n≤20)"
+     * 
+     * INTERPRETACIÓN:
+     * - Diag. Dominante → Convergencia garantizada
+     * - Simétrica → Puede usar métodos especializados (Cholesky)
+     * - Tamaño → Influye en paralelización y overhead
+     * 
+     * @return string Descripción textual de propiedades de matriz
      */
     public function getTipoMatriz() {
         $es_diag_dom = $this->jacobi->esDiagonalmenteDominante();

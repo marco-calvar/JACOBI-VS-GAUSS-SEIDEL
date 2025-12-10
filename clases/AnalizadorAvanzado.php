@@ -1,14 +1,36 @@
 <?php
 /**
- * Clase AnalizadorAvanzado
- * Realiza análisis profundos de convergencia y propiedades matriciales
+ * CLASE ANALIZADOR AVANZADO - ANÁLISIS PROFUNDO DE CONVERGENCIA
+ * =============================================================
+ * Realiza análisis matemático avanzado de propiedades de convergencia
+ * 
+ * ANÁLISIS REALIZADOS:
+ * 1. VELOCIDAD DE CONVERGENCIA: Relación Jacobi/Gauss-Seidel
+ * 2. TASA LINEAL: r = e_{k+1}/e_k (cuánto mejora cada iteración)
+ * 3. RADIO ESPECTRAL: ρ (mayor autovalor de matriz iteración)
+ * 4. ESTABILIDAD: ¿Monotona? ¿Oscilante? ¿Decrece siempre?
+ * 5. RESIDUOS: ||Ax - b|| para verificar solución real
+ * 
+ * TEORÍA MATEMÁTICA:
+ * - Convergencia garantizada si ρ < 1
+ * - Velocidad: ρ más pequeño = más rápido
+ * - Tasa lineal: aproxima log(ρ) para grandes iteraciones
+ * - Estimación: Usa historial de errores (método de la potencia implícito)
  */
 class AnalizadorAvanzado {
-    private $jacobi;
-    private $gauss_seidel;
-    private $matriz_A;
-    private $vector_b;
+    private $jacobi;           // Instancia Jacobi con resultados
+    private $gauss_seidel;     // Instancia GaussSeidel con resultados
+    private $matriz_A;         // Matriz original
+    private $vector_b;         // Vector b (opcional, para residuos)
     
+    /**
+     * CONSTRUCTOR
+     * 
+     * @param Jacobi $jacobi           Instancia con resolver() ya ejecutado
+     * @param GaussSeidel $gauss_seidel Instancia con resolver() ya ejecutado
+     * @param array $matriz_A           Matriz original
+     * @param array|null $vector_b      Vector b (opcional, para cálculo de residuos)
+     */
     public function __construct($jacobi, $gauss_seidel, $matriz_A, $vector_b = null) {
         $this->jacobi = $jacobi;
         $this->gauss_seidel = $gauss_seidel;
@@ -17,7 +39,16 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Realiza análisis completo de convergencia
+     * ANÁLISIS COMPLETO DE CONVERGENCIA (ORQUESTADOR)
+     * Ejecuta todos los análisis y retorna en estructura unificada
+     * 
+     * @return array {
+     *   'velocidad_convergencia': { relacion, mas_rapido, mejora_porcentual },
+     *   'tasa_convergencia_lineal': { jacobi, gauss_seidel, interpretacion },
+     *   'estabilidad': { jacobi: {...}, gauss_seidel: {...} },
+     *   'radio_espectral': { jacobi, gauss_seidel, garantiza_convergencia },
+     *   'prediccion_convergencia': [ predicciones textuales ]
+     * }
      */
     public function analizarConvergencia() {
         $n = count($this->matriz_A);
@@ -32,7 +63,19 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Calcula la velocidad relativa de convergencia
+     * CALCULA VELOCIDAD RELATIVA DE CONVERGENCIA
+     * Compara iteraciones: cuántas veces más rápido es uno vs otro
+     * 
+     * EJEMPLO:
+     * - Jacobi: 100 iteraciones
+     * - Gauss-Seidel: 50 iteraciones
+     * - Relación: 100/50 = 2.0x (GS es 2x más rápido)
+     * 
+     * @return array {
+     *   'relacion': string "2.0x",
+     *   'mas_rapido': string "Gauss-Seidel" o "Jacobi",
+     *   'mejora_porcentual': string "50%"
+     * }
      */
     private function calcularVelocidad() {
         $iter_j = $this->jacobi->getIteraciones();
@@ -53,7 +96,12 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Calcula la mejora porcentual
+     * CALCULA MEJORA PORCENTUAL
+     * Porcentaje de iteraciones ahorradas por método más rápido
+     * 
+     * FÓRMULA: (Δiters / iteraciones_más_lento) × 100%
+     * 
+     * @return string Mejora porcentual con símbolo %, ej "50%"
      */
     private function calcularMejora() {
         $iter_j = $this->jacobi->getIteraciones();
@@ -65,7 +113,23 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Estima la tasa de convergencia lineal
+     * ESTIMA TASA DE CONVERGENCIA LINEAL
+     * Calcula r = e_{k+1}/e_k (razón de reducción del error)
+     * 
+     * TEORÍA:
+     * - Convergencia lineal: e_k ≈ r^k × e_0 (r es la tasa)
+     * - r < 0.5: Muy bueno (error reduce a mitad cada iteración)
+     * - 0.5 < r < 0.9: Aceptable
+     * - r > 0.9: Lento (error reduce poco)
+     * - r ≈ 1: Casi sin convergencia
+     * 
+     * CÁLCULO: Promedian las últimas 5 tasas (evita perturbaciones iniciales)
+     * 
+     * @return array {
+     *   'jacobi': float tasa 0-1,
+     *   'gauss_seidel': float tasa 0-1,
+     *   'interpretacion': string análisis cualitativo
+     * }
      */
     private function estimarTasaConvergencia() {
         $errores_j = $this->jacobi->getErrores();
@@ -82,7 +146,20 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Calcula la tasa lineal de convergencia r = e_{k+1}/e_k
+     * CALCULA TASA LINEAL r = e_{k+1}/e_k
+     * Implementación del cálculo de razón entre errores consecutivos
+     * 
+     * PSEUDOCÓDIGO:
+     * Para k=1 hasta len(errores)-1:
+     *   r_k = e_{k+1} / e_k
+     * Retornar promedio(últimas 5 r_k)
+     * 
+     * PROTECCIÓN:
+     * - Si e_{k-1} < 1e-10: salta (evita división por muy pequeño)
+     * - Si menos de 2 errores: retorna 0
+     * 
+     * @param array $errores Array de errores por iteración
+     * @return float Tasa promedio (tipicamente 0.0 a 1.0)
      */
     private function calcularTasaLineal($errores) {
         if (count($errores) < 2) return 0;
@@ -102,7 +179,17 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Interpreta la tasa de convergencia
+     * INTERPRETA TASA DE CONVERGENCIA
+     * Convierte número de tasa en análisis cualitativo
+     * 
+     * CLASIFICACIÓN:
+     * - r < 0.5: "rápidamente" (error se reduce a mitad)
+     * - 0.5 ≤ r < 0.9: "moderadamente" (mejora visible por iteración)
+     * - r ≥ 0.9: "lentamente" (casi sin cambio)
+     * 
+     * @param float $tasa_j Tasa lineal de Jacobi
+     * @param float $tasa_gs Tasa lineal de Gauss-Seidel
+     * @return string Interpretación textual
      */
     private function interpretarTasa($tasa_j, $tasa_gs) {
         $mejor = min($tasa_j, $tasa_gs) === $tasa_j ? 'Jacobi' : 'Gauss-Seidel';
@@ -117,7 +204,23 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Analiza la estabilidad del proceso iterativo
+     * ANALIZA ESTABILIDAD DEL PROCESO ITERATIVO
+     * Examina patrón de convergencia (monotona vs oscilante)
+     * 
+     * MÉTRICAS:
+     * 1. MONOTONO: ¿Error siempre disminuye? (±1% de tolerancia)
+     * 2. OSCILACIONES: ¿Cuántos cambios de signo en derivada?
+     * 3. ESTABLE: ¿Error_final < Error_inicial?
+     * 
+     * INTERPRETACIÓN:
+     * - Monotono = estable
+     * - Oscilante = posible convergencia lenta
+     * - No estable = falla
+     * 
+     * @return array {
+     *   'jacobi': { monotono: bool, oscilaciones: int, estable: bool },
+     *   'gauss_seidel': { monotono: bool, oscilaciones: int, estable: bool }
+     * }
      */
     private function analizarEstabilidad() {
         $errores_j = $this->jacobi->getErrores();
@@ -138,7 +241,11 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Verifica si la convergencia es monótona
+     * VERIFICA SI CONVERGENCIA ES MONÓTONA
+     * Chequea que cada error ≤ error anterior (con 1% de tolerancia)
+     * 
+     * @param array $errores Array de errores
+     * @return bool true si convergencia monótona (error no aumenta)
      */
     private function esMonotono($errores) {
         if (count($errores) < 2) return true;
@@ -152,7 +259,14 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Cuenta las oscilaciones en el error
+     * CUENTA OSCILACIONES EN ERROR
+     * Detecta cambios de signo en la derivada numérica
+     * 
+     * Una oscilación = cambio de dirección (e_{k-1} < e_k > e_{k+1})
+     * Indica convergencia no monótona
+     * 
+     * @param array $errores Array de errores
+     * @return int Número de oscilaciones detectadas
      */
     private function contarOscilaciones($errores) {
         if (count($errores) < 2) return 0;
@@ -170,7 +284,13 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Verifica si el proceso es estable (errores disminuyen)
+     * VERIFICA ESTABILIDAD DEL PROCESO
+     * Compara error inicial vs error final
+     * 
+     * Proceso estable: error_final < error_inicial (convergencia real)
+     * 
+     * @param array $errores Array de errores
+     * @return bool true si error final < error inicial
      */
     private function esEstable($errores) {
         if (empty($errores)) return false;
@@ -182,7 +302,23 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Estima el radio espectral de las matrices de iteración
+     * ESTIMA RADIO ESPECTRAL
+     * Aproxima ρ (mayor valor propio de matriz iteración)
+     * 
+     * TEORÍA:
+     * - Convergencia garantizada sii ρ < 1
+     * - Velocidad ~ log(ρ): ρ más pequeño = converge más rápido
+     * - Para iteración k: ||e_k|| ≈ ρ^k × ||e_0||
+     * 
+     * ESTIMACIÓN:
+     * - Usa tasa lineal como aproximación a ρ
+     * - Método: ratio de errores en régimen estable
+     * 
+     * @return array {
+     *   'jacobi': float radio espectral estimado,
+     *   'gauss_seidel': float radio espectral estimado,
+     *   'garantiza_convergencia': bool (true sii ambos < 1)
+     * }
      */
     private function estimarRadioEspectral() {
         // Aproximación: usar la tasa de convergencia
@@ -197,7 +333,15 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Predice convergencia basado en propiedades
+     * PREDICE CONVERGENCIA BASADO EN PROPIEDADES
+     * Interpreta resultados en términos matemáticos
+     * 
+     * PREDICCIONES INCLUYEN:
+     * 1. Dominancia diagonal (garantía teórica)
+     * 2. Velocidad estimada (rápida/moderada/lenta)
+     * 3. Comportamiento observado
+     * 
+     * @return array Array de predicciones textuales
      */
     private function predecirConvergencia() {
         $es_diag_dom = $this->jacobi->esDiagonalmenteDominante();
@@ -232,7 +376,20 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Calcula el residuo de la solución
+     * CALCULA RESIDUOS DE AMBAS SOLUCIONES
+     * Verifica: ||Ax - b|| para cada método
+     * 
+     * REQUISITO: vector_b debe estar disponible
+     * 
+     * INTERPRETACIÓN:
+     * - residuo ≈ 0: solución es exacta
+     * - residuo > 0.01: solución tiene error notable
+     * - Compara con tolerancia usada
+     * 
+     * @return array {
+     *   'jacobi': float residuo ||Ax-b||,
+     *   'gauss_seidel': float residuo ||Ax-b||
+     * } o array vacío si vector_b no disponible
      */
     public function calcularResiduos() {
         $residuos = [];
@@ -246,7 +403,15 @@ class AnalizadorAvanzado {
     }
     
     /**
-     * Calcula ||Ax - b|| para una solución
+     * CALCULA RESIDUO PARA UNA SOLUCIÓN
+     * Implementación de ||Ax - b||₂ (norma Euclidiana)
+     * 
+     * FÓRMULA:
+     * residuo = sqrt(Σ((Ax)_i - b_i)²)
+     * donde (Ax)_i = Σ_j a_ij × x_j
+     * 
+     * @param array $solucion Vector solución x
+     * @return float|null Norma L2 del residuo (o null si inputs inválidos)
      */
     private function calcularResiduo($solucion) {
         if (!$solucion || !$this->vector_b) return null;

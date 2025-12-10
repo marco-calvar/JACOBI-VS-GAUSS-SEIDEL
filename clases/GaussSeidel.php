@@ -1,40 +1,61 @@
 <?php
 /**
- * Clase GaussSeidel
- * Implementa el método iterativo de Gauss-Seidel para resolver sistemas de ecuaciones lineales
- * Ax = b
+ * CLASE GAUSS-SEIDEL - VARIANTE MEJORADA DE JACOBI
+ * =================================================
+ * Resuelve sistemas de ecuaciones lineales Ax = b usando el método de Gauss-Seidel.
  * 
- * DIFERENCIA CON JACOBI:
- * En cada iteración, Gauss-Seidel usa los valores YA ACTUALIZADOS en la misma iteración,
- * mientras que Jacobi usa todos los valores de la iteración anterior.
+ * TEORÍA:
+ * - Descompone A = D - L - U (D diagonal, L triangular inferior, U triangular superior)
+ * - Fórmula: (D-L)x^(k) = Ux^(k-1) + b
+ *   → x^(k) = (D-L)^(-1)(Ux^(k-1) + b)
+ * - Componente: x_i^(k) = (b_i - Σ(j<i) a_ij*x_j^(k) - Σ(j>i) a_ij*x_j^(k-1)) / a_ii
+ * - PUNTO CLAVE: Usa valores NUEVOS para j<i, valores VIEJOS para j>i
  * 
- * Esto hace que Gauss-Seidel generalmente converja más rápido (aproximadamente 2x),
- * pero no puede paralelizarse fácilmente.
+ * DIFERENCIA CRÍTICA CON JACOBI:
+ * ┌─────────────────────────────────────────────────────────┐
+ * │ JACOBI:        usa x_j^(k-1) para TODOS los j≠i        │
+ * │ GAUSS-SEIDEL:  usa x_j^(k) para j<i, x_j^(k-1) para j>i│
+ * └─────────────────────────────────────────────────────────┘
+ * 
+ * CARACTERÍSTICAS:
+ * - Converge ~2x más rápido que Jacobi (mismo sistema)
+ * - Converge si matriz es diagonal dominante
+ * - NO PARALELIZABLE (dependencias de datos)
+ * - Mejor para sistemas pequelos/medianos
+ * - Memoria: O(n²) (almacena solo x actual)
+ * 
+ * COMPLEJIDAD:
+ * - Tiempo por iteración: O(n²)
+ * - Iteraciones: típicamente 50-70% de Jacobi
+ * - Total: ~0.5x el tiempo de Jacobi
  */
 class GaussSeidel {
     // Entrada
-    private $matriz_A;
-    private $vector_b;
-    private $tolerancia;
-    private $max_iteraciones;
-    private $x_inicial;
+    private $matriz_A;           // Matriz de coeficientes n×n
+    private $vector_b;           // Vector términos independientes
+    private $tolerancia;         // Criterio parada (típico 1e-6)
+    private $max_iteraciones;    // Límite máximo de iteraciones
+    private $x_inicial;          // Aproximación inicial [0, 0, ..., 0]
     
     // Resultados
-    private $solucion;
-    private $iteraciones;
-    private $tiempo_ejecucion;
-    private $memoria_usada;
-    private $errores;
-    private $convergencia;
+    private $solucion;           // Vector solución x
+    private $iteraciones;        // Cantidad iteraciones realizadas
+    private $tiempo_ejecucion;   // Tiempo en milisegundos
+    private $memoria_usada;      // Memoria en kilobytes
+    private $errores;            // Error en cada iteración (para gráficas)
+    private $convergencia;       // ¿Convergio o no?
     
     /**
-     * Constructor
+     * CONSTRUCTOR
+     * Inicializa el método de Gauss-Seidel con parámetros de control
      * 
-     * @param array $matriz_A Matriz de coeficientes (n x n)
-     * @param array $vector_b Vector de términos independientes (n x 1)
-     * @param float $tolerancia Error máximo aceptable
-     * @param int $max_iter Número máximo de iteraciones
-     * @param array $x_inicial Vector inicial (opcional, por defecto ceros)
+     * @param array $matriz_A         Matriz de coeficientes n×n
+     * @param array $vector_b         Vector de términos independientes
+     * @param float $tolerancia       Error máximo permitido (default 0.0001)
+     * @param int $max_iter           Límite máximo de iteraciones (default 100)
+     * @param array|null $x_inicial   Aproximación inicial (default: vector ceros)
+     * 
+     * NOTA: Si x_inicial es null, se inicia con vector cero
      */
     public function __construct($matriz_A, $vector_b, $tolerancia = 0.0001, $max_iter = 100, $x_inicial = null) {
         $this->matriz_A = $matriz_A;
@@ -53,14 +74,16 @@ class GaussSeidel {
     }
     
     /**
-     * Verifica si la matriz es diagonalmente dominante
+     * VERIFICA DOMINANCIA DIAGONAL ESTRICTA
+     * Condición suficiente para garantizar convergencia (igual que Jacobi)
      * 
-     * Una matriz A es diagonalmente dominante si:
-     * |a_ii| > Σ|a_ij| para todo i (donde j ≠ i)
+     * CRITERIO: Para cada fila i:
+     *    |a_ii| > Σ(j≠i) |a_ij|
      * 
-     * Si es diagonalmente dominante, la convergencia está garantizada.
+     * @return bool true si TODAS las filas satisfacen dominancia diagonal
      * 
-     * @return bool True si es diagonalmente dominante
+     * NOTA: Gauss-Seidel puede converger incluso sin dominancia diagonal
+     * en algunos casos donde Jacobi no converge
      */
     public function esDiagonalmenteDominante() {
         $n = count($this->matriz_A);
@@ -83,12 +106,33 @@ class GaussSeidel {
     }
     
     /**
-     * Ejecuta el método de Gauss-Seidel
+     * EJECUTA ALGORITMO DE GAUSS-SEIDEL
+     * Itera hasta convergencia o límite máximo
      * 
-     * Fórmula: x_i^(k+1) = (1/a_ii) * [b_i - Σ(j<i) a_ij*x_j^(k+1) - Σ(j>i) a_ij*x_j^(k)]
+     * FÓRMULA POR ITERACIÓN:
+     *   x_i^(k+1) = (b_i - Σ(j<i) a_ij*x_j^(k+1) - Σ(j>i) a_ij*x_j^(k)) / a_ii
      * 
-     * La diferencia clave con Jacobi es que usa valores ya actualizados (x_j^(k+1))
-     * para j < i en la misma iteración.
+     * DIFERENCIA CLAVE CON JACOBI:
+     * ─────────────────────────────
+     * Para cada i, usamos:
+     *   - x_j^(k+1) cuando j < i  ← Valores NUEVOS (ya calculados)
+     *   - x_j^(k) cuando j > i    ← Valores VIEJOS (de iteración anterior)
+     * 
+     * Esto causa que:
+     * ✓ Converja ~2x más rápido
+     * ✗ Sea secuencial, no paralelizable
+     * 
+     * PASOS:
+     * 1. Inicializa x = x_inicial (típicamente ceros)
+     * 2. Para cada iteración k = 0, 1, 2, ...
+     *    a) Para cada ecuación i:
+     *       - Suma los términos con j<i usando x_nuevo (valores actualizados)
+     *       - Suma los términos con j>i usando x_nuevo (que contiene x_viejo de j>i)
+     *       - Calcula x_nuevo[i] = (b_i - suma) / a_ii
+     *    b) Calcula error relativo
+     *    c) Si error < tolerancia: CONVERGIO
+     * 
+     * @return void (resultados en propiedades internas)
      */
     public function resolver() {
         // Medir tiempo y memoria
@@ -96,43 +140,44 @@ class GaussSeidel {
         $memoria_inicio = memory_get_usage();
         
         $n = count($this->vector_b);
-        $x_viejo = $this->x_inicial;
-        $x_nuevo = $x_viejo; // Trabajamos sobre el mismo vector
+        $x_viejo = $this->x_inicial;  // x^(k)
+        $x_nuevo = $x_viejo;  // Trabajamos sobre el mismo vector (reutilizando memoria)
         $this->convergencia = false;
         
-        // Iterar hasta convergencia o máximo de iteraciones
+        // LOOP PRINCIPAL DE ITERACIONES
         for ($k = 0; $k < $this->max_iteraciones; $k++) {
-            $x_temp = $x_viejo; // Guardar para calcular el error
+            $x_temp = $x_viejo;  // Guardar para calcular el error
             
-            // MÉTODO DE GAUSS-SEIDEL
+            // ===== CÁLCULO DE GAUSS-SEIDEL =====
             // Para cada ecuación i
             for ($i = 0; $i < $n; $i++) {
-                $suma = 0.0;
+                $suma = 0.0;  // Σ a_ij * x_j (excepto j=i)
                 
                 // Sumar todos los términos a_ij * x_j (excepto cuando j = i)
                 for ($j = 0; $j < $n; $j++) {
                     if ($i != $j) {
-                        // CLAVE: Usa x_nuevo[j], que puede contener valores ya actualizados
-                        // en esta misma iteración (cuando j < i)
+                        // CLAVE: Usa x_nuevo[j], que puede contener:
+                        // - Si j < i: valor x_j^(k+1) ya actualizado (NUEVO)
+                        // - Si j > i: valor x_j^(k) de iteración anterior (VIEJO)
                         $suma += $this->matriz_A[$i][$j] * $x_nuevo[$j];
                     }
                 }
                 
                 // Calcular nuevo valor de x_i
-                // x_i = (b_i - suma) / a_ii
+                // x_i^(k+1) = (b_i - suma) / a_ii
                 $x_nuevo[$i] = ($this->vector_b[$i] - $suma) / $this->matriz_A[$i][$i];
             }
             
-            // Calcular error relativo
+            // ===== VERIFICACIÓN DE CONVERGENCIA =====
             $error = $this->calcularError($x_nuevo, $x_temp);
-            $this->errores[] = $error;
+            $this->errores[] = $error;  // Guardar para gráficas
             
-            // Verificar convergencia
+            // Si error suficientemente pequeño
             if ($error < $this->tolerancia) {
                 $this->convergencia = true;
                 $this->iteraciones = $k + 1;
                 $this->solucion = $x_nuevo;
-                break;
+                break;  // SALIR - convergio
             }
             
             // Preparar para siguiente iteración
@@ -142,20 +187,25 @@ class GaussSeidel {
         // Si no convergió en max_iteraciones
         if (!$this->convergencia) {
             $this->iteraciones = $this->max_iteraciones;
-            $this->solucion = $x_nuevo;
+            $this->solucion = $x_nuevo;  // Usar última aproximación
         }
         
         // Calcular métricas finales
-        $this->tiempo_ejecucion = (microtime(true) - $inicio) * 1000; // en milisegundos
-        $this->memoria_usada = (memory_get_usage() - $memoria_inicio) / 1024; // en KB
+        $this->tiempo_ejecucion = (microtime(true) - $inicio) * 1000;  // convertir a ms
+        $this->memoria_usada = (memory_get_usage() - $memoria_inicio) / 1024;  // convertir a KB
     }
     
     /**
-     * Calcula el error relativo entre dos vectores
+     * CALCULA ERROR RELATIVO EUCLIDIANO
+     * Métrica para determinar convergencia
      * 
-     * Error = ||x_nuevo - x_viejo|| / ||x_nuevo||
+     * FÓRMULA:
+     *   error = ||x_nuevo - x_viejo||₂ / ||x_nuevo||₂
+     *   = sqrt(Σ(x_new[i] - x_old[i])²) / sqrt(Σ(x_new[i]²))
      * 
-     * Donde ||·|| es la norma euclidiana (norma L2)
+     * INTERPRETACIÓN:
+     * - error ≈ 0  → solución convergio
+     * - error > tolerancia → debe seguir iterando
      * 
      * @param array $x_nuevo Vector en iteración k+1
      * @param array $x_viejo Vector en iteración k
@@ -163,17 +213,13 @@ class GaussSeidel {
      */
     private function calcularError($x_nuevo, $x_viejo) {
         $n = count($x_nuevo);
-        $suma_numerador = 0.0;
-        $suma_denominador = 0.0;
+        $suma_numerador = 0.0;    // ||x_nuevo - x_viejo||²
+        $suma_denominador = 0.0;  // ||x_nuevo||²
         
-        // Calcular ||x_nuevo - x_viejo||²
+        // Calcular ambas normas simultaneamente
         for ($i = 0; $i < $n; $i++) {
             $diferencia = $x_nuevo[$i] - $x_viejo[$i];
             $suma_numerador += $diferencia * $diferencia;
-        }
-        
-        // Calcular ||x_nuevo||²
-        for ($i = 0; $i < $n; $i++) {
             $suma_denominador += $x_nuevo[$i] * $x_nuevo[$i];
         }
         
@@ -187,13 +233,19 @@ class GaussSeidel {
     }
     
     /**
-     * Calcula el error absoluto (norma del residuo)
+     * CALCULA ERROR ABSOLUTO (RESIDUO)
+     * Verifica qué tan cerca está la solución del sistema original
      * 
-     * Residuo = ||Ax - b||
+     * FÓRMULA:
+     *   residuo = ||Ax - b||₂ = sqrt(Σ(A[i]*x - b[i])²)
      * 
-     * Útil para verificar qué tan cerca está la solución del sistema original.
+     * INTERPRETACIÓN:
+     * - residuo ≈ 0  → solución satisface bien Ax ≈ b
+     * - residuo > 0.01 → solución tiene error significativo
      * 
-     * @return float Error absoluto
+     * NOTA: Complementa el error relativo. Verifica solución real vs ideal.
+     * 
+     * @return float Error absoluto (norma del residuo)
      */
     public function calcularErrorAbsoluto() {
         if ($this->solucion === null) {
@@ -210,7 +262,7 @@ class GaussSeidel {
                 $suma += $this->matriz_A[$i][$j] * $this->solucion[$j];
             }
             
-            // (Ax)_i - b_i
+            // (Ax - b)_i al cuadrado
             $diferencia = $suma - $this->vector_b[$i];
             $residuo += $diferencia * $diferencia;
         }
@@ -219,9 +271,18 @@ class GaussSeidel {
     }
     
     /**
-     * Verifica la solución multiplicando Ax y comparando con b
+     * VERIFICA SOLUCIÓN MULTIPLICANDO Ax
+     * Compara resultado Ax contra vector b original
      * 
-     * @return array Vector Ax
+     * PROCEDIMIENTO:
+     * - Para cada fila i, calcula Ax[i] = Σ a_ij * x_j
+     * - Retorna vector Ax (debe ser ≈ vector b si solución es correcta)
+     * 
+     * ÚTIL PARA:
+     * - Visualizar residuos fila por fila
+     * - Verificar calidad de solución
+     * 
+     * @return array Vector Ax (o null si no hay solución)
      */
     public function verificarSolucion() {
         if ($this->solucion === null) {
@@ -231,6 +292,7 @@ class GaussSeidel {
         $n = count($this->solucion);
         $Ax = [];
         
+        // Calcular A * x
         for ($i = 0; $i < $n; $i++) {
             $Ax[$i] = 0.0;
             for ($j = 0; $j < $n; $j++) {
@@ -241,61 +303,54 @@ class GaussSeidel {
         return $Ax;
     }
     
-    // ========================================
-    // GETTERS
-    // ========================================
+    // =======================================
+    // MÉTODOS DE ACCESO (GETTERS)
+    // =======================================
+    // Retornan información de la última ejecución
     
-    /**
-     * Obtiene el vector solución
-     * @return array Vector solución x
-     */
+    /** @return array Vector solución x que satisface Ax ≈ b */
     public function getSolucion() {
         return $this->solucion;
     }
     
-    /**
-     * Obtiene el número de iteraciones realizadas
-     * @return int Número de iteraciones
-     */
+    /** @return int Número total de iteraciones ejecutadas */
     public function getIteraciones() {
         return $this->iteraciones;
     }
     
-    /**
-     * Obtiene el tiempo de ejecución en milisegundos
-     * @return float Tiempo en ms
-     */
+    /** @return float Tiempo de ejecución en milisegundos */
     public function getTiempoEjecucion() {
         return $this->tiempo_ejecucion;
     }
     
-    /**
-     * Obtiene la memoria utilizada en kilobytes
-     * @return float Memoria en KB
-     */
+    /** @return float Memoria consumida en kilobytes */
     public function getMemoriaUsada() {
         return $this->memoria_usada;
     }
     
-    /**
-     * Obtiene el historial de errores por iteración
-     * @return array Array de errores
-     */
+    /** @return array Historial de errores por iteración (para gráficas) */
     public function getErrores() {
         return $this->errores;
     }
     
-    /**
-     * Verifica si el método convergió
-     * @return bool True si convergió
-     */
+    /** @return bool true si convergio dentro tolerancia, false si alcanzó max_iteraciones */
     public function convergio() {
         return $this->convergencia;
     }
     
     /**
-     * Obtiene información completa del método
-     * @return array Array asociativo con toda la información
+     * OBTIENE INFORMACIÓN COMPLETA
+     * Retorna todos los resultados en un array asociativo
+     * 
+     * @return array Array con claves:
+     *   - 'metodo': nombre del algoritmo
+     *   - 'convergencia': bool si convergio
+     *   - 'iteraciones': número de iteraciones
+     *   - 'tiempo_ms': tiempo en milisegundos
+     *   - 'memoria_kb': memoria en kilobytes
+     *   - 'error_final': último error calculado
+     *   - 'solucion': vector solución
+     *   - 'historial_errores': array de errores por iteración
      */
     public function getInfo() {
         return [
