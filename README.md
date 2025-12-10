@@ -1,465 +1,319 @@
-# Sistema Comparativo - Jacobi vs Gauss-Seidel
+# Sistema Comparativo: Jacobi vs Gauss-Seidel
 
-> **Herramienta educativa e interactiva para comparar métodos iterativos de resolución de sistemas lineales**
+**Comparación exhaustiva de dos métodos iterativos para resolver sistemas de ecuaciones lineales**
 
-## 📋 Tabla de Contenidos
-
-- [Descripción](#descripción)
-- [Características](#características)
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Documentación](#documentación)
-- [Tecnologías](#tecnologías)
-- [Casos de Prueba](#casos-de-prueba)
-- [Equipo](#equipo)
+Proyecto de Métodos Numéricos I | UMSA | 2025
 
 ---
 
-## 📖 Descripción
+## 🚀 Inicio Rápido (3 Pasos)
 
-Este proyecto implementa un **sistema interactivo de comparación** entre dos métodos iterativos fundamentales:
-
-- **Método de Jacobi**: Método iterativo clásico usando valores anteriores
-- **Método de Gauss-Seidel**: Mejora de Jacobi usando valores actualizados
-
-### Objetivo Pedagógico
-
-Proporcionar una herramienta visual e interactiva para:
-- Entender diferencias entre métodos iterativos
-- Analizar convergencia numérica
-- Comparar rendimiento (iteraciones, tiempo, memoria)
-- Observar comportamiento en diferentes tipos de sistemas
-
----
-
-## ✨ Características
-
-### 🎯 Funcionalidades Principales
-
-- **Entrada de Datos Flexible**
-  - Formulario personalizado para matrices hasta 20x20
-  - 7 casos de prueba predefinidos
-  - Parámetros configurables (tolerancia, máx iteraciones)
-
-- **Cálculos Simultáneos**
-  - Ejecución de ambos métodos
-  - Análisis comparativo automático
-  - Validación matemática completa
-
-- **Visualización de Resultados**
-  - Gráficas de convergencia (escala logarítmica)
-  - Comparación de métricas (barras)
-  - Solución detallada del sistema
-
-- **Análisis Avanzado**
-  - Historial de errores por iteración
-  - Estadísticas de rendimiento
-  - Verificación de diagonal dominancia
-  - Advertencias automáticas
-
-### 🎨 Interfaz
-
-- Diseño moderno con tema azul marino
-- Interfaz responsiva (mobile-friendly)
-- Gráficas interactivas con Chart.js
-- MathJax para visualización matemática
-
----
-
-## 📦 Requisitos
-
-### Requisitos Mínimos
-
-| Componente | Versión |
-|-----------|---------|
-| **PHP** | 7.4+ |
-| **Servidor Web** | Apache 2.4+ |
-| **Navegador** | Chrome, Firefox, Edge, Safari (moderno) |
-
-### Requisitos Opcionales
-
-- Git (para clonar repositorio)
-- XAMPP / WAMP / LAMP (para desarrollo local)
-- Composer (no necesario para esta versión)
-
-### Navegadores Soportados
-
-- ✅ Chrome 90+
-- ✅ Firefox 88+
-- ✅ Edge 90+
-- ✅ Safari 14+
-- ✅ Opera 76+
-
----
-
-## 🚀 Instalación
-
-### Opción 1: Instalación Local (XAMPP)
-
+### 1. Verificar Requisitos
+Necesitas **PHP 7.4+** instalado:
 ```bash
-# 1. Descargar e instalar XAMPP
-# Ir a: https://www.apachefriends.org/
-
-# 2. Copiar proyecto a htdocs
-cp -r proyecto C:\xampp\htdocs\
-# O para Linux/Mac:
-cp -r proyecto /opt/lampp/htdocs/
-
-# 3. Iniciar Apache en XAMPP Control Panel
-
-# 4. Acceder en navegador
-# http://localhost/proyecto
-```
-
-### Opción 2: Desde Git
-
-```bash
-# Clonar repositorio
-cd C:\xampp\htdocs
-git clone https://github.com/usuario/proyecto.git
-cd proyecto
-
-# Iniciar Apache
-# Acceder a http://localhost/proyecto
-```
-
-### Opción 3: Servidor Remoto
-
-```bash
-# Conectar por SSH
-ssh usuario@example.com
-
-# Navegar a directorio web
-cd /var/www/html
-
-# Clonar proyecto
-git clone https://github.com/usuario/proyecto.git
-
-# Configurar permisos
-chmod -R 755 proyecto/
-
-# Acceder en navegador
-# http://example.com/proyecto
-```
-
-### Verificación
-
-```bash
-# Verificar PHP
 php -v
+```
 
-# Verificar sintaxis de archivos
-php -l clases/*.php
+Si no tienes PHP:
+- **Windows**: Descarga desde [php.net](https://www.php.net/downloads)
+- **macOS**: `brew install php`
+- **Linux**: `sudo apt-get install php`
 
-# Verificar que Apache está corriendo
-# (Debería cargar la página en navegador sin errores)
+### 2. Clonar o Descargar el Proyecto
+```bash
+git clone https://github.com/marco-calvar/JACOBI-VS-GAUSS-SEIDEL.git
+cd JACOBI-VS-GAUSS-SEIDEL
+```
+
+### 3. Ejecutar el Sistema
+
+#### Opción A: Windows (Recomendado)
+**Doble clic en:** `SETUP.bat`
+
+O en PowerShell:
+```powershell
+.\SETUP.ps1
+```
+
+#### Opción B: Linux / macOS
+```bash
+chmod +x SETUP.sh
+./SETUP.sh
+```
+
+#### Opción C: Comando Manual
+```bash
+php -S localhost:8000
 ```
 
 ---
 
-## 💻 Uso
+## 📱 Acceso a la Aplicación
 
-### Forma Rápida: Usar Casos de Prueba
+Una vez que el servidor esté corriendo, abre en tu navegador:
 
-1. Abrir aplicación en navegador
-2. Hacer clic en cualquiera de los 7 botones de casos predefinidos
-3. Hacer clic en "Comparar Métodos"
-4. Observar resultados y gráficas
-
-### Forma Manual: Ingreso Personalizado
-
-1. **Ingresar Dimensión**: 2-20
-2. **Completar Matriz A**: Coeficientes del sistema
-3. **Ingresiar Vector b**: Términos independientes
-4. **Configurar Parámetros**:
-   - Tolerancia: ε (generalmente 0.0001)
-   - Máximo iteraciones: (generalmente 1000)
-5. **Hacer clic en "Comparar Métodos"**
-6. **Analizar resultados**
-
-### Interpretación de Resultados
-
-**Solución del Sistema**
-- Vector x que satisface Ax = b
-- Redondeado a 6 decimales
-
-**Detalles de Jacobi**
-- Iteraciones necesarias
-- Error final alcanzado
-- Vector solución
-
-**Detalles de Gauss-Seidel**
-- Mismo formato que Jacobi
-- Típicamente menos iteraciones
-
-**Gráficas**
-- **Líneas**: Convergencia del error (escala log)
-- **Barras**: Comparación de métricas (Iter, Tiempo, Memoria)
+```
+http://localhost:8000
+```
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📋 Estructura del Proyecto
 
 ```
 proyecto/
+├── index.php                      # Página de inicio
+├── bienvenida.php                # Introducción y selector de casos
+├── sistema_comparativo.php        # Aplicación principal (análisis)
 │
-├── index.php                    # Página de inicio con créditos
-├── sistema_comparativo.php      # Aplicación principal
-├── procesar.php                 # (Opcional) Procesamiento alternativo
-│
-├── clases/                      # Clases PHP OOP
-│   ├── Jacobi.php              # Implementación método Jacobi
-│   ├── GaussSeidel.php          # Implementación método Gauss-Seidel
+├── clases/                        # Backend - Lógica matemática
+│   ├── Jacobi.php               # Implementación del método Jacobi
+│   ├── GaussSeidel.php          # Implementación de Gauss-Seidel
+│   ├── Validador.php            # Validación de integridad
 │   ├── Comparador.php           # Análisis comparativo
-│   ├── Validador.php            # Validaciones matemáticas
-│   ├── AnalizadorAvanzado.php   # Análisis de métricas
-│   └── CasosPrueba.php          # 7 casos de prueba
+│   ├── AnalizadorAvanzado.php   # Análisis matemático profundo
+│   └── CasosPrueba.php          # 7 casos predefinidos
 │
 ├── css/
-│   └── estilos.css              # Estilos CSS3 (tema azul marino)
+│   └── estilos.css              # Estilos (tema azul marino)
 │
 ├── js/
-│   └── script.js                # JavaScript interactivo
+│   └── script.js                # Lógica del cliente
 │
-├── docs/                        # Documentación LaTeX
-│   ├── INSTALACION.tex          # Guía de instalación
-│   ├── REPORTE_TECNICO.tex      # Reporte técnico detallado
-│   ├── MANUAL_USUARIO.tex       # Manual de usuario completo
-│   ├── CASOS_PRUEBA.tex         # Documentación de casos
-│   └── [archivos .pdf compilados]
+├── docs/                         # Documentación
+│   ├── INSTALACION.txt
+│   ├── README.md
+│   └── CASOS_PRUEBA.txt
 │
-└── README.md                    # Este archivo
+└── SETUP.*                       # Scripts de instalación
+    ├── SETUP.bat                # Para Windows CMD
+    ├── SETUP.ps1                # Para Windows PowerShell
+    └── SETUP.sh                 # Para Linux/macOS
 ```
 
 ---
 
-## 📚 Documentación
+## 🔧 Configuración Avanzada
 
-### Documentos Disponibles
+### Con Servidor Web Local (XAMPP/WAMP)
 
-| Documento | Contenido |
-|-----------|----------|
-| **INSTALACION.tex** | Instrucciones paso a paso de instalación |
-| **REPORTE_TECNICO.tex** | Fundamentos matemáticos e implementación |
-| **MANUAL_USUARIO.tex** | Guía completa de uso de la aplicación |
-| **CASOS_PRUEBA.tex** | Descripción detallada de los 7 casos |
-| **EVIDENCIA_REQUISITOS.md** | Cumplimiento de requisitos del proyecto |
+**Windows:**
+1. Instala [XAMPP](https://www.apachefriends.org/)
+2. Extrae el proyecto en: `C:\xampp\htdocs\jacobi-gauss-seidel`
+3. Inicia Apache en XAMPP Control Panel
+4. Accede a: `http://localhost/jacobi-gauss-seidel`
 
-### Compilar LaTeX a PDF
+**Linux:**
+```bash
+sudo cp -r . /var/www/html/jacobi-gauss-seidel
+sudo systemctl restart apache2
+# Accede a: http://localhost/jacobi-gauss-seidel
+```
+
+### Con Docker (Opcional)
 
 ```bash
-# Windows (con MikTeX instalado)
-pdflatex INSTALACION.tex
-pdflatex REPORTE_TECNICO.tex
-pdflatex MANUAL_USUARIO.tex
-pdflatex CASOS_PRUEBA.tex
+# Crear imagen
+docker build -t jacobi-gauss-seidel .
 
-# Linux/Mac
-pdflatex INSTALACION.tex
-# o usar online: https://www.overleaf.com/
+# Ejecutar contenedor
+docker run -p 8000:8000 jacobi-gauss-seidel
 ```
 
 ---
 
-## 🛠️ Tecnologías
-
-### Backend
-
-| Tecnología | Versión | Propósito |
-|-----------|---------|----------|
-| **PHP** | 7.4+ | Lógica de algoritmos |
-| **OOP** | - | Arquitectura de clases |
-| **JSON** | - | Comunicación cliente-servidor |
-
-### Frontend
-
-| Tecnología | Versión | Propósito |
-|-----------|---------|----------|
-| **HTML5** | - | Estructura semántica |
-| **CSS3** | - | Estilos y diseño responsivo |
-| **JavaScript** | ES6+ | Interactividad dinámica |
-| **Chart.js** | 3.x | Gráficas interactivas |
-| **MathJax** | 3.x | Visualización matemática |
-
-### Herramientas
-
-- Git - Control de versiones
-- LaTeX - Documentación
-- VS Code - Editor recomendado
-
----
-
-## 🧪 Casos de Prueba
-
-### Los 7 Casos Incluidos
-
-1. **Sistema 3x3 - Diagonal Dominante**
-   - Descripción: Caso simple y estable
-   - Iteraciones: 10-15
-   - Uso: Verificación inicial
-
-2. **Sistema 4x4 - Diagonal Dominante Moderada**
-   - Descripción: Convergencia moderadamente lenta
-   - Iteraciones: 25-35
-   - Uso: Comparación efectiva
-
-3. **Sistema 2x2 - Simple**
-   - Descripción: Sistema mínimo
-   - Iteraciones: 5-8
-   - Uso: Prueba rápida
-
-4. **Sistema 5x5 - Débilmente Diagonal Dominante**
-   - Descripción: Convergencia lenta
-   - Iteraciones: 80-120
-   - Uso: Diferencias notables
-
-5. **Sistema 3x3 - No Diagonal Dominante**
-   - Descripción: Caso límite
-   - Iteraciones: Variable
-   - Uso: Educativo
-
-6. **Sistema 6x6 - Tamaño Mediano**
-   - Descripción: Evaluación de rendimiento
-   - Iteraciones: 50-100
-   - Uso: Comparación realista
-
-7. **Sistema Tridiagonal 5x5**
-   - Descripción: Aplicación real (diferencias finitas)
-   - Iteraciones: 40-60
-   - Uso: Caso práctico
-
----
-
-## 🔍 Validaciones
-
-### Validaciones Implementadas
-
-- ✅ Dimensión: 2 ≤ n ≤ 20
-- ✅ Matriz no singular: det(A) ≠ 0
-- ✅ Valores numéricos válidos
-- ✅ Tolerancia positiva: ε > 0
-- ✅ Diagonal dominancia (aviso)
-
-### Advertencias Generadas
-
-- ⚠️ Matriz NO diagonal dominante
-- ⚠️ Tolerancia muy pequeña
-- ⚠️ Tolerancia muy grande
-- ⚠️ Máximo iteraciones alcanzado
-
----
-
-## 📊 Características Matemáticas
+## 📚 ¿Qué Hace el Sistema?
 
 ### Métodos Implementados
 
-**Método de Jacobi**
-```
-x_i^(k) = (b_i - Σ(a_ij * x_j^(k-1))) / a_ii
-```
+#### 🔹 Jacobi
+- Formula iterativa: **x_i^(k+1) = (b_i - Σ(j≠i) a_ij*x_j^(k)) / a_ii**
+- **Característica:** Usa valores anteriores (x^(k))
+- **Ventaja:** Altamente paralelizable
+- **Desventaja:** Convergencia más lenta
 
-**Método de Gauss-Seidel**
-```
-x_i^(k) = (b_i - Σ(a_ij * x_j^(k)) - Σ(a_ij * x_j^(k-1))) / a_ii
-```
+#### 🔹 Gauss-Seidel
+- Formula iterativa: **x_i^(k+1) = (b_i - Σ(j<i) a_ij*x_j^(k+1) - Σ(j>i) a_ij*x_j^(k)) / a_ii**
+- **Característica:** Usa valores nuevos (x^(k+1)) cuando están disponibles
+- **Ventaja:** Convergencia ~2x más rápida
+- **Desventaja:** Secuencial (no paralelizable)
 
-### Criterios de Parada
+### Análisis Realizados
 
-1. Error relativo: ||x^(k) - x^(k-1)|| / ||x^(k)|| < ε
-2. Máximo iteraciones: k > maxIter
-
-### Análisis de Convergencia
-
-- Escala logarítmica para mejor visualización
-- Comparación lado a lado
-- Historial completo de errores
+✅ **Convergencia:** ¿Ambos convergen? ¿Uno falla?
+✅ **Iteraciones:** Cantidad necesaria para cada método
+✅ **Velocidad:** Tiempo de ejecución en ms
+✅ **Memoria:** Consumo en KB
+✅ **Estabilidad:** ¿Monótona? ¿Oscilante?
+✅ **Radio Espectral:** Estimación de velocidad de convergencia
+✅ **Residuos:** Verificación ||Ax - b||
+✅ **Recomendaciones:** Cuál usar y por qué
 
 ---
 
-## 🎓 Equipo
+## 🧪 7 Casos de Prueba Predefinidos
 
-**Autores del Proyecto**:
-- Quiroz [Apellido]
-- Rocha [Apellido]
-- Laura [Apellido]
-- Callisaya [Apellido]
+El sistema incluye 7 casos pedagógicos para aprender y validar:
 
-**Materia**: Métodos Numéricos I
-**Carrera**: Ingeniería Informática
-**Universidad**: UMSA
-**Fecha**: Diciembre 2025
+| Caso | Dimensión | Propósito | Resultado Esperado |
+|------|-----------|----------|-------------------|
+| **Caso 1** | 3×3 | Diagonal dominante ideal | Convergencia rápida en ambos |
+| **Caso 2** | 4×4 | Sistema general moderado | GS converge ~2x más rápido |
+| **Caso 3** | 2×2 | Visualización simple | Muy pocas iteraciones |
+| **Caso 4** | 5×5 | Diferencia J vs GS máxima | EJEMPLO PEDAGÓGICO |
+| **Caso 5** | 3×3 | NO diagonal dominante | Divergencia (enseñanza) |
+| **Caso 6** | 6×6 | Tamaño mediano | Evaluación de eficiencia |
+| **Caso 7** | 5×5 | Tridiagonal (diferencias finitas) | Estructura especial |
+
+---
+
+## 📊 Flujo de Uso
+
+```
+1. Abre http://localhost:8000
+   ↓
+2. Lee presentación (index.php)
+   ↓
+3. Elige una opción en bienvenida.php
+   ├─ Seleccionar caso predefinido
+   └─ Ingresar sistema manual
+   ↓
+4. Sistema ejecuta:
+   ├─ Validación
+   ├─ Resuelve con Jacobi
+   ├─ Resuelve con Gauss-Seidel
+   └─ Genera análisis comparativo
+   ↓
+5. Visualiza resultados:
+   ├─ Gráficas de convergencia
+   ├─ Tablas comparativas
+   ├─ Análisis matemático
+   └─ Recomendaciones
+```
+
+---
+
+## 🔍 Características Técnicas
+
+### Frontend
+- **HTML5** con estructura semántica
+- **CSS3** con tema azul marino profesional
+- **JavaScript** ES6+ para interactividad
+- **Chart.js 3.9** para gráficas de convergencia
+- **MathJax 3.2** para renderizado de matrices
+
+### Backend
+- **PHP 7.4+** con programación orientada a objetos
+- **6 clases** con responsabilidades específicas
+- **Validación exhaustiva** de entrada
+- **Análisis matemático avanzado**
+- **Sin dependencias externas** (puro PHP)
+
+### Matemática
+- Implementación exacta de fórmulas iterativas
+- Criterios de convergencia (dominancia diagonal)
+- Estimación de radio espectral
+- Cálculo de residuos
+- Análisis de estabilidad numérica
+
+---
+
+## 🛠️ Solución de Problemas
+
+### "PHP no encontrado" / "php: command not found"
+
+**Solución:**
+1. Instala PHP (ver sección Inicio Rápido)
+2. Agrega PHP al PATH:
+   - **Windows:** Busca "Variables de entorno" → Editar PATH
+   - **Linux/Mac:** `echo $PATH` y verifica ruta PHP
+
+### "Puerto 8000 en uso"
+
+**Solución - Usar otro puerto:**
+```bash
+php -S localhost:3000   # Usa puerto 3000
+# Luego accede a: http://localhost:3000
+```
+
+### "Permisos denegados en SETUP.sh"
+
+**Solución:**
+```bash
+chmod +x SETUP.sh
+./SETUP.sh
+```
+
+### "Error: División por cero en Jacobi.php"
+
+**Causa:** Diagonal de matriz contiene ceros
+**Solución:** Usa un caso predefinido o ingresa matriz con diagonal ≠ 0
+
+---
+
+## 📖 Documentación Adicional
+
+- **[INSTALACION.txt](docs/INSTALACION.txt)** - Instalación detallada
+- **[REPORTE_TECNICO.txt](docs/REPORTE_TECNICO.txt)** - Análisis matemático
+- **[MANUAL_USUARIO.txt](docs/MANUAL_USUARIO.txt)** - Guía de uso
+- **[CASOS_PRUEBA.txt](docs/CASOS_PRUEBA.txt)** - Descripción de casos
+
+---
+
+## 👥 Autores
+
+**Proyecto:** Sistema Comparativo Jacobi vs Gauss-Seidel
+**Materia:** Métodos Numéricos I
+**Universidad:** Universidad Mayor de San Andrés (UMSA)
+**Carrera:** Informática
+
+**Autores:**
+- Quiroz Coila Ariadne Checcid
+- Rocha Rivero Jose Leonardo
+- Laura Rios Lizbeth Fabiola
+- Callisaya Vargas Marco Ronaldo
 
 ---
 
 ## 📝 Licencia
 
-Proyecto educativo - UMSA 2025
+Proyecto académico de código abierto
+Libre para uso educativo y modificación
 
 ---
 
-## 🤝 Contribuciones
+## 🔗 Enlaces Útiles
 
-Este es un proyecto educativo. Para reportar problemas:
-
-1. Verificar documentación
-2. Revisar casos de prueba
-3. Contactar al equipo de desarrollo
-
----
-
-## 📞 Soporte
-
-### Recursos
-
-- 📖 Documentación: Ver carpeta `/docs`
-- 🧪 Casos de prueba: Botones en página principal
-- ❓ FAQ: Ver MANUAL_USUARIO.tex
-
-### Solución de Problemas
-
-**Gráficas no aparecen**
-- Limpiar caché: Ctrl+F5
-- Verificar conexión internet
-
-**Cálculos lentos**
-- Aumentar tolerancia
-- Reducir máximo iteraciones
-
-**Resultados incorrectos**
-- Verificar matriz válida
-- Comprobar valores ingresados
+- **GitHub:** https://github.com/marco-calvar/JACOBI-VS-GAUSS-SEIDEL
+- **PHP Manual:** https://www.php.net/manual/
+- **Chart.js:** https://www.chartjs.org/
+- **MathJax:** https://www.mathjax.org/
 
 ---
 
-## ✅ Checklist de Funcionalidades
+## ✨ Características Destacadas
 
-- [x] Implementación Jacobi
-- [x] Implementación Gauss-Seidel
-- [x] Validaciones completas
-- [x] 7 casos de prueba
-- [x] Gráficas interactivas
-- [x] Análisis comparativo
-- [x] Interfaz moderna
-- [x] Documentación completa
-- [x] Manual de usuario
-- [x] Reporte técnico
-- [x] Créditos de autores
-
----
-
-## 🚀 Roadmap Futuro (Opcional)
-
-- [ ] Base de datos para almacenar resultados
-- [ ] Exportar resultados a PDF/Excel
-- [ ] Versión móvil mejorada
-- [ ] Métodos adicionales (SOR, Conjugado Gradiente)
-- [ ] Análisis de número de condición
-- [ ] Paralelización en cliente
+✅ Interfaz moderna y responsiva
+✅ 2 métodos iterativos completamente implementados
+✅ 7 casos de prueba predefinidos
+✅ Análisis comparativo exhaustivo
+✅ Gráficas interactivas de convergencia
+✅ Visualización de matrices con MathJax
+✅ Validación exhaustiva de entrada
+✅ Análisis matemático avanzado (radio espectral)
+✅ Documentación inline en código fuente
+✅ Scripts de instalación automatizados
 
 ---
 
-**Última actualización**: Diciembre 10, 2025
+## 🚀 Próximos Pasos
 
-**Estado**: ✅ Completado y Documentado
+¿Primera vez aquí? Sigue estos pasos:
+
+1. **Lee:** Intro en index.php
+2. **Prueba:** Caso 1 en bienvenida.php (diagonal dominante)
+3. **Compara:** Caso 4 (ve la diferencia entre métodos)
+4. **Experimenta:** Ingresa tu propio sistema
+5. **Aprende:** Lee la documentación detallada
+
+¡Disfruta explorando los métodos iterativos! 🎓
