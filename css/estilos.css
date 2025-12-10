@@ -1,0 +1,122 @@
+/* Estilos básicos */
+body { font-family: Arial, sans-serif; background:#f7f7f7; color:#222; }
+main { max-width:800px; margin:40px auto; padding:20px; background:#fff; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+textarea { width:100%; font-family:monospace; }
+
+/**
+ * estilos.css - Estilos adicionales y mejoras
+ */
+
+/* Animaciones suaves */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 1024px) {
+    .comparativa {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .ejemplos {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        border-radius: 8px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    .matriz-fila input {
+        width: 60px;
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
+
+/* Impresión */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .container {
+        box-shadow: none;
+        max-width: 100%;
+    }
+    
+    button {
+        display: none;
+    }
+    
+    .tabs {
+        display: none;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1e1e1e;
+    }
+    
+    .container {
+        background: #2d2d2d;
+        color: #e0e0e0;
+    }
+    
+    input[type="number"], 
+    input[type="text"] {
+        background: #3d3d3d;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    
+    label {
+        color: #e0e0e0;
+    }
+}

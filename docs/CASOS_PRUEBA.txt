@@ -1,0 +1,440 @@
+================================================================================
+CASOS DE PRUEBA DOCUMENTADOS
+Sistema Comparativo de Métodos Iterativos
+Jacobi vs Gauss-Seidel
+================================================================================
+
+TABLA DE CONTENIDOS
+================================================================================
+1. Introducción
+2. Caso 1: Sistema 3x3 - Diagonal Dominante
+3. Caso 2: Sistema 4x4 - Diagonal Dominante Moderada
+4. Caso 3: Sistema 2x2 - Simple
+5. Caso 4: Sistema 5x5 - Débilmente Diagonal Dominante
+6. Caso 5: Sistema 3x3 - No Diagonal Dominante
+7. Caso 6: Sistema 6x6 - Tamaño Mediano
+8. Caso 7: Sistema Tridiagonal 5x5
+9. Comparación General de Casos
+10. Estrategia de Selección
+
+
+1. INTRODUCCIÓN
+================================================================================
+
+Este documento describe los 7 casos de prueba predefinidos del sistema.
+Cada caso fue seleccionado para demostrar aspectos diferentes de los métodos
+iterativos.
+
+
+2. CASO 1: SISTEMA 3x3 - DIAGONAL DOMINANTE
+================================================================================
+
+2.1 Descripción
+---
+Matriz diagonal dominante con convergencia garantizada.
+Este es el caso más simple y estable.
+
+2.2 Especificaciones
+---
+• Dimensión: 3x3
+• Diagonal Dominante: SÍ
+• Convergencia Garantizada: SÍ
+• Dificultad: Fácil
+• Tiempo Esperado: < 10 ms
+
+2.3 Matriz y Vector
+---
+Matriz A:
+  [4   1   0]
+  [1   5   2]
+  [0   2   3]
+
+Vector b:
+  [7, 12, 9]
+
+2.4 Análisis Matemático
+---
+Verificación diagonal dominante:
+  • Fila 1: |4| > |1| + |0| ✓ (4 > 1)
+  • Fila 2: |5| > |1| + |2| ✓ (5 > 3)
+  • Fila 3: |3| > |0| + |2| ✓ (3 > 2)
+
+2.5 Solución Esperada
+---
+x ≈ [1.0, 2.0, 1.0]
+
+2.6 Resultados Típicos
+---
+• Jacobi: 12-15 iteraciones
+• Gauss-Seidel: 10-12 iteraciones
+• Diferencia: Gauss-Seidel ~10-20% más rápido
+
+2.7 Uso Recomendado
+---
+Para verificar que el sistema funciona correctamente y entender los
+resultados básicos.
+
+
+3. CASO 2: SISTEMA 4x4 - DIAGONAL DOMINANTE MODERADA
+================================================================================
+
+3.1 Descripción
+---
+Sistema más complejo con diagonal dominancia moderada.
+Demuestra diferencias más claras entre métodos.
+
+3.2 Especificaciones
+---
+• Dimensión: 4x4
+• Diagonal Dominante: SÍ (moderada)
+• Convergencia Garantizada: SÍ
+• Dificultad: Media
+• Tiempo Esperado: 20-50 ms
+
+3.3 Matriz y Vector
+---
+Matriz A:
+  [8   2   1   1]
+  [1   7   2   1]
+  [1   2   9   2]
+  [1   1   2   6]
+
+Vector b:
+  [14, 18, 22, 16]
+
+3.4 Análisis de Diagonal Dominancia
+---
+• Fila 1: |8| = 8 > 4 ✓ (diferencia: 4)
+• Fila 2: |7| = 7 > 4 ✓ (diferencia: 3)
+• Fila 3: |9| = 9 > 5 ✓ (diferencia: 4)
+• Fila 4: |6| = 6 > 4 ✓ (diferencia: 2)
+
+3.5 Solución Esperada
+---
+x ≈ [1.0, 1.5, 1.8, 1.2]
+
+3.6 Resultados Típicos
+---
+• Jacobi: 25-35 iteraciones
+• Gauss-Seidel: 18-25 iteraciones
+• Diferencia: Gauss-Seidel ~25-35% más rápido
+
+3.7 Observaciones
+---
+La diferencia entre métodos es más evidente aquí.
+Bueno para demostrar ventajas de Gauss-Seidel.
+
+3.8 Uso Recomendado
+---
+Comparación efectiva de métodos.
+
+
+4. CASO 3: SISTEMA 2x2 - SIMPLE
+================================================================================
+
+4.1 Descripción
+---
+Sistema mínimo de 2x2 para propósitos didácticos y verificación rápida.
+
+4.2 Especificaciones
+---
+• Dimensión: 2x2
+• Diagonal Dominante: SÍ
+• Convergencia Garantizada: SÍ
+• Dificultad: Muy Fácil
+• Tiempo Esperado: < 5 ms
+
+4.3 Matriz y Vector
+---
+Matriz A:
+  [3   1]
+  [1   3]
+
+Vector b:
+  [5, 5]
+
+4.4 Solución Esperada
+---
+x = [1.25, 1.25]
+
+4.5 Resultados Típicos
+---
+• Jacobi: 5-8 iteraciones
+• Gauss-Seidel: 4-6 iteraciones
+• Converge rápidamente
+
+4.6 Uso Recomendado
+---
+Prueba rápida y verificación inicial.
+Sistema pequeño pero válido.
+
+
+5. CASO 4: SISTEMA 5x5 - DÉBILMENTE DIAGONAL DOMINANTE
+================================================================================
+
+5.1 Descripción
+---
+Sistema donde la diagonal dominancia es débil.
+Convergencia más lenta, diferencias aún más evidentes.
+
+5.2 Especificaciones
+---
+• Dimensión: 5x5
+• Diagonal Dominante: SÍ (débil)
+• Convergencia Garantizada: SÍ (pero lenta)
+• Dificultad: Media-Alta
+• Tiempo Esperado: 100-200 ms
+
+5.3 Matriz y Vector
+---
+Matriz A:
+  [3.1  1.0  1.0  0.0  0.5]
+  [1.0  3.2  0.0  1.0  0.5]
+  [1.0  0.0  3.3  1.0  0.5]
+  [0.0  1.0  1.0  3.4  0.5]
+  [0.5  0.5  0.5  0.5  3.5]
+
+Vector b:
+  [6.6, 6.2, 6.3, 6.4, 6.5]
+
+5.4 Análisis de Diagonal Dominancia
+---
+Diagonal dominancia débil: |a_ii| supera apenas la suma de off-diagonal.
+
+5.5 Resultados Típicos
+---
+• Jacobi: 80-120 iteraciones
+• Gauss-Seidel: 50-80 iteraciones
+• Diferencia: Gauss-Seidel ~35-40% más rápido
+• Mayor diferencia: Mejor para comparación
+
+5.6 Observaciones
+---
+Demuestra claramente la ventaja de Gauss-Seidel en casos con
+convergencia lenta.
+
+5.7 Uso Recomendado
+---
+Para ver diferencias notables entre métodos.
+
+
+6. CASO 5: SISTEMA 3x3 - NO DIAGONAL DOMINANTE
+================================================================================
+
+6.1 Descripción
+---
+Matriz SIN diagonal dominancia.
+Convergencia no garantizada matemáticamente, pero puede converger.
+
+6.2 Especificaciones
+---
+• Dimensión: 3x3
+• Diagonal Dominante: NO
+• Convergencia Garantizada: NO
+• Dificultad: Alta
+• Tiempo Esperado: Variable
+
+6.3 Matriz y Vector
+---
+Matriz A:
+  [2   3   1]
+  [1   2   3]
+  [3   1   2]
+
+Vector b:
+  [10, 10, 10]
+
+6.4 Análisis de No Diagonal Dominancia
+---
+• Fila 1: |2| < |3| + |1| ✗ (2 < 4) NO dominante
+• Fila 2: |2| < |1| + |3| ✗ (2 < 4) NO dominante
+• Fila 3: |2| < |3| + |1| ✗ (2 < 4) NO dominante
+
+6.5 Advertencias Esperadas
+---
+Sistema mostrará advertencia:
+"Matriz NO es diagonal dominante - Convergencia no garantizada"
+
+6.6 Comportamiento Posible
+---
+1. Puede converger (si autovalores < 1)
+2. Puede divergir (si autovalores > 1)
+3. Puede oscilar
+
+6.7 Resultados Típicos
+---
+• Convergencia: No garantizada
+• Comportamiento: Puede no converger
+• Iteraciones máximas: Puede alcanzarse límite
+
+6.8 Uso Recomendado
+---
+Demostrar importancia de la diagonal dominancia.
+Caso educativo.
+
+
+7. CASO 6: SISTEMA 6x6 - TAMAÑO MEDIANO
+================================================================================
+
+7.1 Descripción
+---
+Sistema más grande (6x6) para evaluar rendimiento con sistemas medianos.
+
+7.2 Especificaciones
+---
+• Dimensión: 6x6
+• Diagonal Dominante: SÍ
+• Convergencia Garantizada: SÍ
+• Dificultad: Media
+• Tiempo Esperado: 50-150 ms
+• Complejidad: O(6²) = O(36) por iteración
+
+7.3 Características
+---
+• Matriz generada aleatoriamente con DD
+• Bueno para evaluar escalabilidad
+• Tiempo más observable
+• Diferencia de memoria más clara
+
+7.4 Resultados Típicos
+---
+• Jacobi: 50-100 iteraciones
+• Gauss-Seidel: 35-70 iteraciones
+• Tiempo: 20-100 ms
+• Memoria: 1-3 KB estimado
+
+7.5 Uso Recomendado
+---
+Evaluar desempeño con sistemas de tamaño medio.
+Comparación realista.
+
+
+8. CASO 7: SISTEMA TRIDIAGONAL 5x5
+================================================================================
+
+8.1 Descripción
+---
+Matriz tridiagonal típica de problemas de diferencias finitas.
+Estructura especial que favorece convergencia.
+
+8.2 Especificaciones
+---
+• Dimensión: 5x5
+• Estructura: Tridiagonal
+• Diagonal Dominante: SÍ
+• Convergencia Garantizada: SÍ
+• Dificultad: Media
+• Tiempo Esperado: 50-100 ms
+
+8.3 Matriz y Vector
+---
+Matriz A:
+  [4  -1   0   0   0]
+  [-1  4  -1   0   0]
+  [0  -1   4  -1   0]
+  [0   0  -1   4  -1]
+  [0   0   0  -1   4]
+
+Vector b:
+  [1, 1, 1, 1, 1]
+
+8.4 Solución Esperada (Aproximada)
+---
+x ≈ [0.75, 1.00, 1.00, 1.00, 0.75]
+
+8.5 Aplicaciones Reales
+---
+Este tipo de matriz aparece en:
+  • Ecuaciones diferenciales (diferencias finitas)
+  • Problemas de difusión de calor
+  • Ecuaciones de onda discretizadas
+  • Splines cúbicas
+
+8.6 Resultados Típicos
+---
+• Jacobi: 40-60 iteraciones
+• Gauss-Seidel: 25-40 iteraciones
+• Convergencia: Rápida para estructura especial
+• Diferencia: ~40-50% más rápido Gauss-Seidel
+
+8.7 Características Especiales
+---
+1. Estructura simétrica: A = A^T
+2. Matriz sparse: solo 3 diagonales
+3. Bien acondicionada
+4. Convergencia predecible
+
+8.8 Uso Recomendado
+---
+Demostrar aplicaciones reales.
+Caso práctico que aparece en ingeniería.
+
+
+9. COMPARACIÓN GENERAL DE CASOS
+================================================================================
+
+CASO  │ n │  DD  │ DIFICULTAD   │ ITERACIONES │ USO
+──────┼───┼──────┼──────────────┼─────────────┼──────────────
+  1   │ 3 │  Sí  │ Fácil        │  10-15      │ Verificación
+  2   │ 4 │  Sí  │ Media        │  25-35      │ Comparación
+  3   │ 2 │  Sí  │ Muy fácil    │   5-8       │ Rápido
+  4   │ 5 │ Débil│ Media-Alta   │ 80-120      │ Conv. lenta
+  5   │ 3 │  No  │ Muy alta     │ Variable    │ Educativo
+  6   │ 6 │  Sí  │ Media        │  50-100     │ Rendimiento
+  7   │ 5 │  Sí  │ Especial     │  40-60      │ Aplic. real
+
+
+10. ESTRATEGIA DE SELECCIÓN
+================================================================================
+
+10.1 Para Principiantes
+---
+Comenzar con:
+  1. Caso 3 (2x2 Simple) - verificar que funciona
+  2. Caso 1 (3x3 DD) - entender resultados
+  3. Caso 2 (4x4 DD) - ver diferencias
+
+10.2 Para Análisis Profundo
+---
+Usar:
+  1. Caso 4 (5x5 Débil DD) - convergencia lenta
+  2. Caso 6 (6x6 Mediano) - rendimiento
+  3. Caso 7 (Tridiagonal) - aplicación real
+
+10.3 Para Casos Límite
+---
+  1. Caso 5 (No DD) - límite teórico
+  2. Variar tolerancia - precisión vs iteraciones
+
+10.4 Notas Importantes
+---
+
+Diferencias en Resultados:
+Los resultados pueden variar ligeramente entre ejecuciones debido a:
+  • Precisión de punto flotante
+  • Diferencias en redondeo
+  • Variaciones en tiempo de sistema
+
+Reproducibilidad:
+Para resultados reproducibles:
+  1. Usar misma tolerancia
+  2. Mismo máximo de iteraciones
+  3. Mismo vector inicial
+
+
+10.5 Conclusión
+---
+Los 7 casos de prueba cubren:
+  1. Diferentes tamaños (2x2 a 6x6)
+  2. Diferentes tipos de matrices
+  3. Casos ideales y límites
+  4. Aplicaciones realistas
+
+Permiten verificar correctitud y comprender el comportamiento de los métodos.
+
+
+================================================================================
+Última actualización: Diciembre 10, 2025
+Versión: 1.0
+Estado: Completado
+================================================================================

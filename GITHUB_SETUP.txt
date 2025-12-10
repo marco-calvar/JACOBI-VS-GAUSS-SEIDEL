@@ -1,0 +1,216 @@
+================================================================================
+INSTRUCCIONES PARA SUBIR A GITHUB
+Sistema Comparativo Jacobi vs Gauss-Seidel
+================================================================================
+
+DATOS DE ACCESO:
+Email: ronaldo.calvar@gmail.com
+Usuario: marco-calvar
+
+PASO 1: CREAR REPOSITORIO EN GITHUB
+================================================================================
+1. Ir a https://github.com/new
+2. Llenar campos:
+   Repository name: sistema-comparativo-jacobi-gauss-seidel
+   Description: Sistema web comparativo entre métodos iterativos Jacobi y Gauss-Seidel
+   Visibility: Public (o Private si prefieres)
+3. NO inicializar con README, .gitignore ni licencia (ya tenemos)
+4. Click "Create repository"
+
+
+PASO 2: CONFIGURAR GIT LOCALMENTE
+================================================================================
+Abrir PowerShell en la carpeta proyecto y ejecutar:
+
+git config --global user.email "ronaldo.calvar@gmail.com"
+git config --global user.name "marco-calvar"
+
+Verificar configuración:
+git config --global user.email
+git config --global user.name
+
+
+PASO 3: INICIALIZAR Y AGREGAR ARCHIVOS
+================================================================================
+cd c:\Users\ASUS\Downloads\METODOS NUMERICOS_PROYECTO\proyecto
+
+Inicializar repositorio:
+git init
+
+Agregar todos los archivos:
+git add .
+
+Verificar estado:
+git status
+
+Hacer commit inicial:
+git commit -m "Proyecto inicial: Sistema Comparativo Jacobi vs Gauss-Seidel"
+
+
+PASO 4: CONECTAR CON GITHUB Y HACER PUSH
+================================================================================
+Reemplazar USUARIO y REPO en el comando:
+git remote add origin https://github.com/marco-calvar/sistema-comparativo-jacobi-gauss-seidel.git
+
+Verificar remoto:
+git remote -v
+
+Hacer push (rama main):
+git branch -M main
+git push -u origin main
+
+
+PASO 5: AUTENTICACIÓN EN GITHUB
+================================================================================
+Si pide contraseña:
+OPCIÓN A - Token personal (recomendado):
+1. GitHub → Settings → Developer settings → Personal access tokens
+2. Click "Generate new token"
+3. Seleccionar scopes: repo (Full control)
+4. Copy token
+5. Al pedir contraseña: pegar token como contraseña
+
+OPCIÓN B - SSH (alternativa):
+1. Generar clave SSH: ssh-keygen -t ed25519 -C "ronaldo.calvar@gmail.com"
+2. Agregar a GitHub → Settings → SSH and GPG keys
+3. Usar URL SSH en lugar HTTPS: git@github.com:marco-calvar/...
+
+
+PASO 6: VERIFICACIÓN
+================================================================================
+Ir a: https://github.com/marco-calvar/sistema-comparativo-jacobi-gauss-seidel
+
+Deberías ver:
+✓ Todos los archivos PHP
+✓ Carpeta clases/ con 6 clases
+✓ Carpeta css/ con estilos
+✓ Carpeta js/ con scripts
+✓ Carpeta docs/ con documentación
+✓ index.php y sistema_comparativo.php
+✓ .gitignore
+✓ README.md
+
+
+PASO 7: FUTURAS ACTUALIZACIONES
+================================================================================
+Después de hacer cambios:
+
+git status                          # Ver cambios
+git add .                           # Agregar cambios
+git commit -m "Descripción cambio"  # Commit
+git push                            # Subir a GitHub
+
+
+ESTRUCTURA ARCHIVOS QUE SE SUBEN
+================================================================================
+proyecto/
+├── index.php                      ✓
+├── sistema_comparativo.php        ✓
+├── .gitignore                     ✓ (nuevo)
+├── README.md                      ✓
+├── DOCUMENTACION_CODIGO.md        ✓
+├── EVIDENCIA_REQUISITOS.md        ✓
+├── clases/
+│   ├── Jacobi.php                 ✓
+│   ├── GaussSeidel.php            ✓
+│   ├── Comparador.php             ✓
+│   ├── Validador.php              ✓
+│   ├── AnalizadorAvanzado.php     ✓
+│   └── CasosPrueba.php            ✓
+├── css/
+│   └── estilos.css                ✓
+├── js/
+│   └── script.js                  ✓
+└── docs/
+    ├── INDEX.txt                  ✓
+    ├── INSTALACION.txt            ✓
+    ├── REPORTE_TECNICO.txt        ✓
+    ├── MANUAL_USUARIO.txt         ✓
+    ├── CASOS_PRUEBA.txt           ✓
+    ├── INSTALACION.tex            ✓
+    ├── REPORTE_TECNICO.tex        ✓
+    ├── MANUAL_USUARIO.tex         ✓
+    └── CASOS_PRUEBA.tex           ✓
+
+ARCHIVOS QUE NO SE SUBEN (.gitignore):
+✗ .vscode/
+✗ .idea/
+✗ node_modules/
+✗ .env
+✗ etc.
+
+
+COMANDOS RÁPIDOS DESPUÉS CONFIGURACIÓN INICIAL
+================================================================================
+# Ver historial commits
+git log
+
+# Ver diferencias
+git diff
+
+# Crear rama nueva
+git branch nombre-rama
+git checkout nombre-rama
+
+# Cambiar entre ramas
+git checkout main
+git checkout nombre-rama
+
+# Fusionar ramas
+git merge nombre-rama
+
+# Eliminar rama
+git branch -d nombre-rama
+
+# Ver todas las ramas
+git branch -a
+
+# Tag (versiones)
+git tag -a v1.0 -m "Versión 1.0"
+git push origin v1.0
+
+
+CONFIGURACIÓN RECOMENDADA DESPUÉS PUSH
+================================================================================
+En la página del repositorio en GitHub:
+
+1. DESCRIPCIÓN:
+   GitHub → Repo → Edit (lápiz) → Description
+   "Sistema web interactivo comparativo entre métodos iterativos Jacobi y Gauss-Seidel"
+
+2. TEMAS (Topics):
+   Agregar: jacobi, gauss-seidel, métodos-numéricos, php, javascript, chart.js
+
+3. LICENCIA:
+   GitHub → Add file → Create new file → LICENSE
+   Elegir licencia (ej: MIT)
+
+4. BRANCH PROTECTION:
+   Settings → Branches → Add rule
+   Proteger rama main de cambios directos
+
+5. COLABORADORES:
+   Settings → Collaborators → Add people
+   (Si necesitas agregar a compañeros de proyecto)
+
+
+NOTAS IMPORTANTES
+================================================================================
+• Usa contraseña fuerte para GitHub
+• Guarda tu token personal de forma segura
+• No commits credenciales o datos sensibles
+• Haz commits frecuentes con mensajes descriptivos
+• Pull antes de push si trabajan múltiples personas
+• Revisa .gitignore para no subir archivos temporales
+
+SOPORTE
+================================================================================
+Si necesitas ayuda:
+• GitHub Docs: https://docs.github.com
+• Git Tutorial: https://git-scm.com/doc
+• Troubleshooting: https://github.com/support
+
+================================================================================
+FIN DE INSTRUCCIONES
+Creado: Diciembre 10, 2025
+================================================================================

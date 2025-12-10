@@ -1,0 +1,36 @@
+# IDE y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Archivos del Sistema
+.git/
+.gitkeep
+*.log
+
+# PHP
+composer.lock
+vendor/
+
+# Caché
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Temporales
+*.tmp
+*.temp
+node_modules/
+dist/
+build/
+
+# Archivos sensibles
+.env
+.env.local
+config/secrets/

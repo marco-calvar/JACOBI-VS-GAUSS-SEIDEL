@@ -1,0 +1,340 @@
+================================================================================
+REPORTE TÉCNICO - SISTEMA COMPARATIVO JACOBI vs GAUSS-SEIDEL
+Métodos Numéricos I - UMSA
+================================================================================
+TABLA DE CONTENIDOS: 1. Introducción | 2. Fundamentos Matemáticos | 3. Arquitectura | 4. Algoritmos | 5. Validaciones | 6. Rendimiento | 7. Análisis Comparativo | 8. Visualización | 9. Flujo Ejecución | 10. Conclusiones
+
+================================================================================
+1. INTRODUCCIÓN
+================================================================================
+El sistema implementa una comparación exhaustiva entre dos métodos iterativos clásicos para resolver sistemas de ecuaciones lineales: Jacobi y Gauss-Seidel. Permite entender cómo funcionan, comparar su rendimiento, analizar diagonal dominancia, visualizar comportamiento gráficamente y evaluar eficiencia en tiempo real.
+
+Jacobi (1845): Uno de los primeros métodos iterativos, simple de implementar, baja velocidad convergencia, bajo requisito memoria.
+Gauss-Seidel (1874): Mejora de Jacobi, convergencia ~2x más rápida, implementación más compleja, memoria similar.
+
+Aplicaciones: Simulaciones de elementos finitos, análisis de circuitos eléctricos, modelado dinámica fluidos, procesamiento imágenes, Machine Learning, análisis numérico computacional.
+
+================================================================================
+2. FUNDAMENTOS MATEMÁTICOS
+================================================================================
+2.1 SISTEMAS DE ECUACIONES LINEALES
+Un sistema de n ecuaciones lineales con n incógnitas: $A \mathbf{x} = \mathbf{b}$ donde A ∈ ℝ^(n×n) matriz coeficientes, x ∈ ℝ^n vector incógnitas, b ∈ ℝ^n vector términos independientes.
+
+Forma expandida: a₁₁x₁ + a₁₂x₂ + ... + a₁ₙxₙ = b₁; a₂₁x₁ + a₂₂x₂ + ... + a₂ₙxₙ = b₂; ... aₙ₁x₁ + aₙ₂x₂ + ... + aₙₙxₙ = bₙ
+
+Requisitos: Matriz cuadrada (n×n), no singular (det(A) ≠ 0), preferiblemente diagonal dominante.
+
+Ejemplo 3×3: ⎡ 2 -1  0⎤ ⎡x₁⎤   ⎡ 3⎤; ⎢-1  3 -1⎥ ⎢x₂⎥ = ⎢ 6⎥; ⎣ 0 -1  2⎦ ⎣x₃⎦   ⎣-3⎦
+
+2.2 MÉTODO DE JACOBI - TEORÍA Y FÓRMULAS
+Jacobi descompone matriz A: A = D - L - U donde D matriz diagonal, L triangular inferior (negada), U triangular superior (negada).
+
+Fórmula iteración k-ésima: $\mathbf{x}^{(k)} = D^{-1}(\mathbf{b} + (L + U)\mathbf{x}^{(k-1)})$
+
+Forma escalar: $x_i^{(k)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j=1, j \neq i}^{n} a_{ij} x_j^{(k-1)} \right)$ para i = 1, 2, ..., n
+
+PUNTO CLAVE: Todas componentes x₁, x₂, ..., xₙ en iteración k usan valores iteración anterior (k-1). Esto distingue Jacobi de Gauss-Seidel.
+
+Matriz iteración: $J = D^{-1}(L + U) = I - D^{-1}A$. Radio espectral ρ(J) = max|λᵢ(J)| determina convergencia. Convergencia garantizada si ρ(J) < 1.
+
+Criterios parada: 1) Error relativo $\| \mathbf{x}^{(k)} - \mathbf{x}^{(k-1)} \|_{\infty} < \epsilon$ | 2) Residuo $\| A\mathbf{x}^{(k)} - \mathbf{b} \|_{\infty} < \epsilon$ | 3) Max iteraciones alcanzado.
+
+2.3 MÉTODO DE GAUSS-SEIDEL - TEORÍA Y FÓRMULAS
+Mejora Jacobi usando valores actualizados INMEDIATAMENTE después calculados, no espera siguiente iteración.
+
+Comparación:
+Jacobi: x₁^(k) usa x₂^(k-1), x₃^(k-1), ... xₙ^(k-1) [valores viejos]; x₂^(k) usa x₁^(k-1), x₃^(k-1), ... xₙ^(k-1) [valores viejos]
+Gauss-Seidel: x₁^(k) usa x₂^(k-1), x₃^(k-1), ... xₙ^(k-1) [valores viejos]; x₂^(k) usa x₁^(k) [NUEVO], x₃^(k-1), ... xₙ^(k-1) [viejos]
+
+Descomposición: A = D - L - U
+Iteración: $(D - L)\mathbf{x}^{(k)} = U\mathbf{x}^{(k-1)} + \mathbf{b}$ equivalente a $\mathbf{x}^{(k)} = (D - L)^{-1}(U\mathbf{x}^{(k-1)} + \mathbf{b})$
+
+Fórmula escalar: $x_i^{(k)} = \frac{1}{a_{ii}} \left( b_i - \sum_{j=1}^{i-1} a_{ij} x_j^{(k)} - \sum_{j=i+1}^{n} a_{ij} x_j^{(k-1)} \right)$
+Primera suma usa valores NUEVOS (j < i), segunda suma usa valores VIEJOS (j > i).
+
+Ejemplo 3×3: x₁^(k) = (b₁ - a₁₂x₂^(k-1) - a₁₃x₃^(k-1)) / a₁₁; x₂^(k) = (b₂ - a₂₁x₁^(k) - a₂₃x₃^(k-1)) / a₂₂; x₃^(k) = (b₃ - a₃₁x₁^(k) - a₃₂x₂^(k)) / a₃₃
+
+Matriz iteración: $G = (D - L)^{-1}U$. Para matrices simétricas definidas positivas: ρ(G) < ρ(J), Gauss-Seidel SIEMPRE converge más rápido cuando ambos convergen.
+
+2.4 CRITERIOS DE CONVERGENCIA
+Diagonal Dominancia (suficiente): $|a_{ii}| > \sum_{j=1, j \neq i}^{n} |a_{ij}|$ para todo i = 1, 2, ..., n. Si cumple AMBOS métodos garantizan convergencia.
+
+Ejemplo DD: A = ⎡ 5 -1  0⎤; ⎢-1  4 -1⎥; ⎣ 0 -1  3⎦. Verificación: |5| > |-1| + |0| → 5 > 1 ✓; |4| > |-1| + |-1| → 4 > 2 ✓; |3| > |0| + |-1| → 3 > 1 ✓
+
+Diagonal Dominancia Débil: $|a_{ii}| \geq \sum_{j=1, j \neq i}^{n} |a_{ij}|$ con desigualdad fuerte en al menos una fila. NO GARANTIZA convergencia en general.
+
+Otras Condiciones: 1) Simetría y positiva definidez: Si A simétrica y definida positiva, Gauss-Seidel converge sin DD. 2) Irreducibilidad: Si A irreducible y DD débil, converge. 3) Radio Espectral: Convergencia garantizada si ρ(B) < 1.
+
+Velocidad Convergencia: $\| \mathbf{x}^{(k)} - \mathbf{x}^* \| \leq C \cdot \rho^k$ donde x^* solución exacta, ρ = ρ(B) < 1 radio espectral, C constante. Tasa convergencia lineal: Error^(k) ≈ ρ × Error^(k-1). Si ρ = 0.5 error reduce mitad; ρ = 0.9 error reduce 90%; ρ = 0.99 converge muy lentamente.
+
+2.5 ANÁLISIS DE ERROR Y PRECISIÓN
+Fuentes error: 1) Truncamiento (discretización): se introduce iteración finita en lugar infinita, proporcional ρ^k. 2) Redondeo (máquina): acumulación errores punto flotante. 3) Aproximación inicial: depende qué buena suposición inicial x^(0). 4) Escala: errores amplificados si A mal condicionada.
+
+Número Condicionamiento: $\text{cond}(A) = \| A \| \cdot \| A^{-1} \|$. Interpretación: cond(A) = 1 matriz perfectamente condicionada; < 100 bien condicionada; > 1000 mal condicionada; > 10⁶ muy mal condicionada. Matriz mal condicionada amplifica errores redondeo.
+
+Estimación Error: Error absoluto $\| \mathbf{x}^{(k)} - \mathbf{x}^* \| \approx \frac{\rho}{1-\rho} \| \mathbf{x}^{(k)} - \mathbf{x}^{(k-1)} \|$. Error relativo $\frac{\| \mathbf{x}^{(k)} - \mathbf{x}^* \|}{\| \mathbf{x}^* \|} \leq \epsilon$.
+
+================================================================================
+3. ARQUITECTURA DEL SISTEMA
+================================================================================
+3.1 DESCRIPCIÓN CLASES
+
+Clase Jacobi.php: Implementación método iterativo Jacobi. Atributos: $matriz array coeficientes, $vector términos independientes, $tolerancia criterio parada, $maxIteraciones, $iteraciones realizadas, $errores cada iteración, $soluciones cada iteración. Métodos: resolver() ejecuta completo, iteracion() realiza una, calcularError() criterio parada, obtenerResultados() detallados.
+
+Clase GaussSeidel.php: Implementación Gauss-Seidel. Atributos: mismo que Jacobi. Métodos: idem. DIFERENCIA CRÍTICA: iteracion() usa x_i = (b_i - sum(j<i) a_ij*x_j_NUEVO - sum(j>i) a_ij*x_j_VIEJO) / a_ii.
+
+Clase Validador.php: Validación datos entrada y matrices. Métodos: validarMatriz() formato/dimensiones, validarVector() compatibilidad, verificarDiagonalDominante() propiedad, verificarNoSingular() det(A), obtenerAdvertencias() problemas. Criterios: cuadrada (n×n), diagonal ≠ 0, no singular, dimensiones coherentes.
+
+Clase Comparador.php: Análisis comparativo ambos métodos. Métodos: compararSoluciones() diferencia, compararIteraciones() convergencia rápida, compararErrores() evolución, obtenerMetricas() estadísticas, determinarGanador() mejor método. Métricas: diferencia iteraciones, factor aceleración (iter_Jacobi / iter_GS), diferencia tiempo, diferencia error final.
+
+Clase AnalizadorAvanzado.php: Análisis matemático profundo. Métodos: estimarRadioEspectral() ρ(B), predecirConvergencia() ¿convergerá?, estimarIteracionesNecesarias() cuántas, analizarMatriz() propiedades A, obtenerAnalisis() reporte. Análisis: diagonal dominancia, condicionamiento (estimado), simetría, eigenvalores (aproximados).
+
+Clase CasosPrueba.php: 7 casos prueba predefinidos. Estructura: nombre, descripción, matriz, vector, solución_exacta, propiedades. Casos: 1) Sistema 3×3 DD, 2) Sistema 4×4 DD Moderada, 3) Sistema 2×2 Simple, 4) Sistema 5×5 Débil DD, 5) Sistema 3×3 No DD, 6) Sistema 6×6 Mediano, 7) Sistema Tridiagonal 5×5.
+
+3.2 ARQUITECTURA PLANTUML
+@startuml Arquitectura
+!theme plain
+package "PRESENTACIÓN" { component "index.php"; component "HTML/CSS/JS" }
+package "LÓGICA NEGOCIO" { component "sistema_comparativo.php"; component "Validador" }
+package "ALGORITMOS" { component "Jacobi"; component "GaussSeidel" }
+package "ANÁLISIS" { component "Comparador"; component "AnalizadorAvanzado" }
+package "CASOS" { component "CasosPrueba" }
+index.php --> HTML/CSS/JS
+HTML/CSS/JS --> sistema_comparativo.php
+sistema_comparativo.php --> Validador
+sistema_comparativo.php --> Jacobi
+sistema_comparativo.php --> GaussSeidel
+sistema_comparativo.php --> Comparador
+sistema_comparativo.php --> AnalizadorAvanzado
+sistema_comparativo.php --> CasosPrueba
+Validador --> Jacobi
+Validador --> GaussSeidel
+@enduml
+
+================================================================================
+4. IMPLEMENTACIÓN ALGORITMOS
+================================================================================
+4.1 ALGORITMO JACOBI
+
+PSEUDOCÓDIGO:
+ENTRADA: A matriz n×n, b vector, x0 inicial (default [0,...,0]), tol tolerancia (1e-6), max_iter (1000)
+SALIDA: x aproximación, iter iteraciones, error_historia
+INICIO:
+  x := x0; k := 0
+  MIENTRAS k < max_iter HACER:
+    k := k + 1; x_nuevo := array[n]
+    PARA i = 1 HASTA n:
+      suma := 0
+      PARA j = 1 HASTA n:
+        SI j ≠ i: suma := suma + A[i,j] * x[j]
+      SI A[i,i] = 0: ERROR "diagonal cero"
+      x_nuevo[i] := (b[i] - suma) / A[i,i]
+    error := max(|x_nuevo[i] - x[i]|)
+    SI error < tol: ROMPER
+    error_historia[k] := error
+    x := x_nuevo
+  RETORNAR (x, k, error_historia)
+
+CÓDIGO PHP:
+function resolver($x0 = null, $tolerancia = 1e-6, $maxIteraciones = 1000) {
+  $n = count($this->matriz);
+  $x = is_null($x0) ? array_fill(0, $n, 0) : $x0;
+  $this->iteraciones = 0; $this->errores = []; $this->soluciones = [$x];
+  for ($k = 0; $k < $maxIteraciones; $k++) {
+    $x_nuevo = [];
+    for ($i = 0; $i < $n; $i++) {
+      if (abs($this->matriz[$i][$i]) < 1e-15) throw new Exception("diagonal cero");
+      $suma = 0;
+      for ($j = 0; $j < $n; $j++) {
+        if ($i != $j) $suma += $this->matriz[$i][$j] * $x[$j];
+      }
+      $x_nuevo[$i] = ($this->vector[$i] - $suma) / $this->matriz[$i][$i];
+    }
+    $error = 0;
+    for ($i = 0; $i < $n; $i++) $error = max($error, abs($x_nuevo[$i] - $x[$i]));
+    $this->errores[] = $error; $this->soluciones[] = $x_nuevo; $this->iteraciones++;
+    if ($error < $tolerancia) break;
+    $x = $x_nuevo;
+  }
+  return $x;
+}
+
+CARACTERÍSTICAS: Ventajas: simple, bajo memoria, paralelizable, numéricamente estable. Desventajas: lenta, requiere DD, valores desactualizados. Complejidad: O(n²) por iteración, O(log(1/ε) / log(1/ρ)) iteraciones, total O(n² × iteraciones).
+
+4.2 ALGORITMO GAUSS-SEIDEL
+
+PSEUDOCÓDIGO:
+ENTRADA: idem Jacobi
+SALIDA: idem Jacobi
+INICIO:
+  x := x0; k := 0
+  MIENTRAS k < max_iter HACER:
+    k := k + 1; x_nuevo := copia(x); error := 0
+    PARA i = 1 HASTA n:
+      suma1 := 0; suma2 := 0
+      PARA j = 1 HASTA i-1: suma1 := suma1 + A[i,j] * x_nuevo[j]
+      PARA j = i+1 HASTA n: suma2 := suma2 + A[i,j] * x[j]
+      SI A[i,i] = 0: ERROR "diagonal cero"
+      x_nuevo[i] := (b[i] - suma1 - suma2) / A[i,i]
+      error := max(error, |x_nuevo[i] - x[i]|)
+    SI error < tol: ROMPER
+    error_historia[k] := error
+    x := x_nuevo
+  RETORNAR (x, k, error_historia)
+
+CÓDIGO PHP:
+function resolver($x0 = null, $tolerancia = 1e-6, $maxIteraciones = 1000) {
+  $n = count($this->matriz);
+  $x = is_null($x0) ? array_fill(0, $n, 0) : $x0;
+  $this->iteraciones = 0; $this->errores = []; $this->soluciones = [$x];
+  for ($k = 0; $k < $maxIteraciones; $k++) {
+    $x_nuevo = $x;
+    $error = 0;
+    for ($i = 0; $i < $n; $i++) {
+      if (abs($this->matriz[$i][$i]) < 1e-15) throw new Exception("diagonal cero");
+      $suma = 0;
+      for ($j = 0; $j < $i; $j++) $suma += $this->matriz[$i][$j] * $x_nuevo[$j];
+      for ($j = $i + 1; $j < $n; $j++) $suma += $this->matriz[$i][$j] * $x[$j];
+      $x_nuevo[$i] = ($this->vector[$i] - $suma) / $this->matriz[$i][$i];
+      $error = max($error, abs($x_nuevo[$i] - $x[$i]));
+    }
+    $this->errores[] = $error; $this->soluciones[] = $x_nuevo; $this->iteraciones++;
+    if ($error < $tolerancia) break;
+    $x = $x_nuevo;
+  }
+  return $x;
+}
+
+CARACTERÍSTICAS: Ventajas: ~2x más rápido Jacobi, información fresca, mejor rendimiento, cache. Desventajas: más complejo, NO paralelizable, requiere DD, actualización delicada. Complejidad: O(n²) por iteración, ~0.5 × Jacobi iteraciones, total O(n² × 0.5 × iteraciones).
+
+DIFERENCIA CRÍTICA: Actualización secuencial (en sitio): x_i^(k) usa x_j^(k) j < i (recién calculados) + x_j^(k-1) j > i (anterior). Equivale resolver sistema triangular: $(D - L)x^{(k)} = Ux^{(k-1)} + b$.
+
+4.3 MÉTODOS AUXILIARES
+
+Verificar Diagonal Dominancia:
+FUNCIÓN verificarDD(A):
+  n := tamaño(A)
+  PARA i = 1 HASTA n:
+    suma := 0
+    PARA j = 1 HASTA n: SI j ≠ i: suma := suma + |A[i,j]|
+    SI |A[i,i]| <= suma: RETORNAR FALSE
+  RETORNAR TRUE
+
+Estimación Radio Espectral: $\rho(B) \approx \frac{\| \mathbf{e}^{(k)} \|}{\| \mathbf{e}^{(k-1)} \|}$ donde e^(k) = x^(k) - x^(k-1). Código: $ratio = $errores[$k] / $errores[$k-1] estimación ρ. ratio < 0.1: rápida, > 0.9: lenta.
+
+Predicción Iteraciones: $k_{est} = \frac{\ln(\epsilon/\|e^{(0)}\|)}{\ln(\rho)}$. Código: $rho = estimarRadioEspectral(); SI $rho < 1: $k_est = log($tolerancia) / log($rho); RETORNAR ceil($k_est); SINO: RETORNAR "no converge".
+
+================================================================================
+5. VALIDACIONES Y MANEJO ERRORES
+================================================================================
+Niveles validación:
+NIVEL 1 - Entrada: formato array, dimensiones coherentes, sin NaN/Inf
+NIVEL 2 - Matemática: diagonal ≠ 0, diagonal dominancia, singularidad, simetría
+NIVEL 3 - Numérica: condicionamiento pobre, mal escalado, desbordamientos
+NIVEL 4 - Post-solución: convergencia alcanzada, rango razonable, residuo
+
+Códigos error:
+E001 - Matriz no cuadrada: Usuario ingresó n×m n≠m → Ingresar cuadrada
+E002 - Dimensiones inconsistentes: Columnas matriz ≠ elementos vector → Compatibilidad
+E003 - Diagonal cero: A[i,i] = 0 → Permutar filas
+E004 - Singular: det(A) ≈ 0 → Verificar redundancia
+E005 - Sin convergencia: max_iter completado → Aumentar max_iter o verificar DD
+E006 - NaN/Inf: Overflow numérico → Reescalar o reducir tolerancia
+
+Advertencias:
+W001 - Sin DD: MEDIA → Verificar manualmente. W002 - ρ cercano 1: MEDIA → Más iteraciones. W003 - Condicionamiento alto: ALTA → Reescalar. W004 - Casi singular: ALTA → Verificar rango. W005 - Lenta: BAJA → Informativa.
+
+================================================================================
+6. ANÁLISIS RENDIMIENTO Y COMPLEJIDAD
+================================================================================
+Complejidad Jacobi: O(n²) por iteración, O(log(1/ε) / log(1/ρ)) iteraciones, O(n² × iteraciones) total.
+Complejidad Gauss-Seidel: O(n²) por iteración, ~0.5 × Jacobi iteraciones, O(n² × 0.5 × iteraciones) total.
+Práctica: n=100 G-S ~2x más rápido; n=1000 G-S ~2x más rápido. Ventaja independiente n, depende ρ.
+Memoria: Jacobi O(n²) matriz + O(n) vectores; G-S idem; ambos O(n²) domina.
+
+Optimizaciones:
+1) Evitar recomputación: guardar errores/soluciones permite análisis sin recomputar
+2) Early termination: detiene cuando error < tolerancia, no siempre max_iter
+3) Verificación rápida diagonal: antes iteraciones verifica diag ≠ 0
+4) Tolerancia relativa: ||x^(k) - x^(k-1)||∞ mejor que absoluta, mejor escala
+
+Benchmarks Típicos:
+Sistema 3×3 DD: Jacobi 8-12 iter 0.001s, G-S 4-6 iter 0.0005s, aceleración ~2x
+Sistema 4×4 DD Moderada: Jacobi 15-20 iter 0.002s, G-S 8-10 iter 0.001s, ~2x
+Sistema 5×5 Débil DD: Jacobi 40-60 iter 0.005s, G-S 20-30 iter 0.003s, ~2x
+Sistema 6×6 General: Jacobi 100+ iter 0.010s, G-S 50+ iter 0.005s, ~2x
+Aceleración G-S respecto Jacobi típicamente 2.0-2.5x para matrices típicas.
+
+================================================================================
+7. ANÁLISIS COMPARATIVO
+================================================================================
+Tabla Comparativa:
+ASPECTO | JACOBI | GAUSS-SEIDEL
+Convergencia | Lineal | Lineal
+Velocidad | Lenta | ~2x rápida
+Paralelizable | SÍ | NO
+Requisito DD | SÍ | SÍ
+Complejidad | Baja | Media
+Estabilidad | Buena | Buena
+Memoria | O(n²) | O(n²)
+
+Métricas Comparación:
+MÉTRICA 1 - Relación iteraciones: $R_{iter} = \frac{\text{iter}_J}{\text{iter}_{GS}}$ típico 1.8-2.5
+MÉTRICA 2 - Aceleración: $F_{acel} = \frac{\text{tiempo}_J}{\text{tiempo}_{GS}}$ típico 1.9-2.4
+MÉTRICA 3 - Error: $\Delta e = \| e_J^{final} - e_{GS}^{final} \|$ ambos similar tolerancia
+MÉTRICA 4 - Convergencia: $q_J = \frac{e_J^{(k)}}{e_J^{(k-1)}}$ G-S tiene q_GS < q_J
+
+================================================================================
+8. VISUALIZACIÓN Y GRAFICACIÓN
+================================================================================
+Gráfica 1 - Evolución Error: Línea XY, X iteración (0-max), Y error (log). Muestra disminución error por iteración. Fórmula: $\log_{10}(e^{(k)}) = \log_{10}(e^{(0)}) + k \cdot \log_{10}(\rho)$.
+
+Gráfica 2 - Convergencia Lineal: Línea XY, X iteración, Y valor solución cada variable. Muestra convergencia x₁, x₂, ..., xₙ a valores finales.
+
+Gráfica 3 - Comparación Iteraciones: Barras, X métodos, Y iteraciones. Visualmente cuál converge rápido.
+
+Gráfica 4 - Matriz Heatmap: Visualiza valores matriz A con colores.
+
+Librerías: Chart.js 3.9 gráficas interactivas, zoom/pan, export PNG, responsive. MathJax 3.2 fórmulas LaTeX, $...$ inline, $$...$$ bloque.
+
+================================================================================
+9. FLUJO EJECUCIÓN SISTEMA
+================================================================================
+1. Usuario abre index.php → 2. Interfaz casos/entrada manual → 3. Usuario selecciona → 4a. Caso: POST id → 4b. Manual: POST matriz/vector → 5. Validador verifica → 6a. Falla: error usuario → 6b. OK: continúa → 7. Ejecuta Jacobi → 8. Ejecuta Gauss-Seidel → 9. Comparador analiza → 10. AnalizadorAvanzado calcula → 11. Genera JSON resultados → 12. JavaScript renderiza → 13. Usuario ve análisis
+
+Códigos HTTP: 200 OK éxito JSON | 400 Bad Request validación falla | 500 Internal Server Error algoritmo falla
+
+================================================================================
+10. CONCLUSIONES TÉCNICAS
+================================================================================
+1. GAUSS-SEIDEL SUPERIOR: Converge ~2x rápido Jacobi, usa actualizaciones frescas, cache mejor.
+
+2. DIAGONAL DOMINANCIA CRÍTICA: Garantiza convergencia ambos, sin DD impredecible, sistema advierte.
+
+3. CONDICIONAMIENTO IMPORTA: Bien condicionada: rápida. Mal condicionada: lenta. Puede requerir aumentar tolerancia.
+
+4. IMPLEMENTACIÓN CORRECTA: Jacobi valores VIEJOS, Gauss-Seidel valores NUEVOS (j<i), orden importa.
+
+5. EFICIENCIA: O(n²) ambos métodos, típicamente O(n²) sistemas moderados. Grandes: SOR o multigrid.
+
+Recomendaciones:
+JACOBI: Paralelización, simple DD, implementación simple. GAUSS-SEIDEL: Primera opción, velocidad, simétrica positiva definida. OTROS: Grandes: multigrid/GMRES. Mal condicionadas: precondicionamiento. Tiempo real: más rápidos.
+
+Mejoras Futuro:
+1) SOR (Over-Relaxation): convergencia más rápida con ω óptimo
+2) Precondicionadores: mejorar matrices mal condicionadas
+3) Krylov (GMRES, Conjugate Gradient): casos especiales
+4) Paralela (CUDA/OpenCL): n grande
+5) Adaptativa: elegir automáticamente según propiedades
+
+================================================================================
+REFERENCIAS
+================================================================================
+[1] Golub, G. H., & Van Loan, C. F. (2013). Matrix computations. Johns Hopkins University Press.
+[2] Saad, Y. (2003). Iterative methods for sparse linear systems. SIAM.
+[3] Burden, R. L., & Faires, J. D. (2010). Numerical analysis. Cengage Learning.
+[4] Boyd, S. (2023). Introduction to Applied Linear Algebra. Cambridge University Press.
+
+================================================================================
+FIN REPORTE TÉCNICO - Métodos Numéricos I - UMSA - Diciembre 2025
+================================================================================

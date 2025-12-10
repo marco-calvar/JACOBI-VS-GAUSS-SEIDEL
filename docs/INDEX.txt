@@ -1,0 +1,340 @@
+================================================================================
+DOCUMENTACIÓN COMPLETA - ÍNDICE
+Sistema Comparativo de Métodos Iterativos Jacobi vs Gauss-Seidel
+================================================================================
+
+BIENVENIDA
+================================================================================
+
+Este archivo sirve como índice y guía rápida para toda la documentación
+del proyecto.
+
+
+ARCHIVOS DE DOCUMENTACIÓN DISPONIBLES
+================================================================================
+
+EN FORMATO TXT (RECOMENDADO):
+---
+1. INSTALACION.txt
+   → Instrucciones paso a paso para instalar el proyecto
+   → Opciones: XAMPP local o servidor remoto
+   → Solución de problemas comunes
+
+2. MANUAL_USUARIO.txt
+   → Guía completa para usar la aplicación
+   → Cómo ingresar datos manualmente
+   → Cómo usar los 7 casos de prueba
+   → Interpretación de resultados y gráficas
+
+3. REPORTE_TECNICO.txt
+   → Fundamentos matemáticos de los métodos
+   → Descripción de arquitectura y clases
+   → Implementación de algoritmos
+   → Análisis de rendimiento y complejidad
+
+4. CASOS_PRUEBA.txt
+   → Documentación detallada de 7 casos de prueba
+   → Especificaciones y resultados esperados
+   → Estrategia de selección de casos
+   → Comparación entre casos
+
+
+EN LA RAÍZ DEL PROYECTO:
+---
+5. README.md
+   → Descripción general del proyecto
+   → Características principales
+   → Requisitos y estructura
+   → Tecnologías utilizadas
+
+6. DOCUMENTACION_CODIGO.md
+   → Documentación del código fuente
+   → Estructura de clases y métodos
+   → Flujo de ejecución
+   → Ejemplos de uso del código
+
+7. EVIDENCIA_REQUISITOS.md
+   → Evidencia de cumplimiento de requisitos
+   → Código exacto con números de línea
+   → Cumplimiento de especificaciones del licenciado
+
+
+FORMATOS ALTERNATIVOS (LATEX):
+---
+• INSTALACION.tex
+• MANUAL_USUARIO.tex
+• REPORTE_TECNICO.tex
+• CASOS_PRUEBA.tex
+
+(Pueden compilarse a PDF con pdflatex)
+
+
+CÓMO NAVEGAR LA DOCUMENTACIÓN
+================================================================================
+
+SI ERES NUEVO EN EL PROYECTO:
+---
+1. Lee: README.md (5 minutos)
+   → Entiende qué hace el proyecto
+
+2. Lee: MANUAL_USUARIO.txt (15 minutos)
+   → Aprende a usar la aplicación
+
+3. Prueba: Los 7 casos de prueba (10 minutos)
+   → Experimenta con la aplicación
+
+4. Lee: CASOS_PRUEBA.txt (10 minutos)
+   → Entiende cada caso en detalle
+
+Tiempo total: ~40 minutos
+
+SI NECESITAS INSTALAR EL PROYECTO:
+---
+1. Lee: INSTALACION.txt
+2. Sigue los pasos según tu sistema operativo
+3. Verifica la instalación
+4. Soluciona problemas si los hay
+
+SI NECESITAS ENTENDER LA TÉCNICA:
+---
+1. Lee: REPORTE_TECNICO.txt
+   → Fundamentos matemáticos
+   → Arquitectura del sistema
+
+2. Lee: DOCUMENTACION_CODIGO.md
+   → Cómo está implementado
+   → Flujo de ejecución
+
+SI NECESITAS MOSTRAR CUMPLIMIENTO DE REQUISITOS:
+---
+1. Lee: EVIDENCIA_REQUISITOS.md
+   → Líneas exactas de código
+   → Cumplimiento de requisitos
+
+
+ESTRUCTURA DEL PROYECTO
+================================================================================
+
+proyecto/
+│
+├── README.md                    # Descripción general
+├── DOCUMENTACION_CODIGO.md      # Doc. del código
+├── EVIDENCIA_REQUISITOS.md      # Cumplimiento requisitos
+│
+├── index.php                    # Página inicio
+├── sistema_comparativo.php      # Aplicación principal
+│
+├── clases/                      # Clases PHP OOP
+│   ├── Jacobi.php
+│   ├── GaussSeidel.php
+│   ├── Comparador.php
+│   ├── Validador.php
+│   ├── AnalizadorAvanzado.php
+│   └── CasosPrueba.php
+│
+├── css/
+│   └── estilos.css
+│
+├── js/
+│   └── script.js
+│
+└── docs/                        # Documentación
+    ├── INSTALACION.txt          ← Empieza aquí
+    ├── MANUAL_USUARIO.txt
+    ├── REPORTE_TECNICO.txt
+    ├── CASOS_PRUEBA.txt
+    ├── INSTALACION.tex
+    ├── MANUAL_USUARIO.tex
+    ├── REPORTE_TECNICO.tex
+    └── CASOS_PRUEBA.tex
+
+
+CONTENIDO RESUMIDO DE CADA DOCUMENTO
+================================================================================
+
+INSTALACION.txt:
+  • Requisitos (PHP 7.4+, Apache, Navegador)
+  • Opción 1: XAMPP local
+  • Opción 2: Servidor remoto
+  • Verificación de instalación
+  • Solución de problemas
+  [Lectura: 10-15 minutos]
+
+MANUAL_USUARIO.txt:
+  • Cómo usar casos de prueba (5 pasos)
+  • Cómo ingresar datos manualmente (6 pasos)
+  • Interpretación de resultados
+  • Interpretación de gráficas
+  • Validaciones y advertencias
+  • Preguntas frecuentes
+  • Solución de problemas
+  [Lectura: 20-30 minutos]
+
+REPORTE_TECNICO.txt:
+  • Fundamentos: Jacobi y Gauss-Seidel
+  • Diagonal dominancia
+  • Arquitectura: 6 clases principales
+  • Algoritmos: pseudocódigo detallado
+  • Validaciones implementadas
+  • Complejidad computacional
+  • Casos especiales
+  [Lectura: 30-45 minutos]
+
+CASOS_PRUEBA.txt:
+  • Descripción de 7 casos
+  • Matriz, vector y soluciones esperadas
+  • Resultados típicos (iteraciones, tiempo)
+  • Análisis de diagonal dominancia
+  • Comparación de casos
+  • Estrategia de selección
+  [Lectura: 25-35 minutos]
+
+
+FORMATOS DISPONIBLES
+================================================================================
+
+TXT (Recomendado):
+  ✓ Fácil de leer
+  ✓ Compatible con todos los editores
+  ✓ Se ve bien en terminal
+  ✓ Búsqueda rápida (Ctrl+F)
+  → Usar estos archivos para lectura rápida
+
+MARKDOWN (.md):
+  ✓ Mejor formato
+  ✓ Compatible con GitHub
+  ✓ Estructura clara
+  → README.md, DOCUMENTACION_CODIGO.md, EVIDENCIA_REQUISITOS.md
+
+LATEX (.tex):
+  ✓ Profesional
+  ✓ Para compilar a PDF
+  ✓ Matemáticas formales
+  → Si necesitas versión PDF formal:
+     pdflatex INSTALACION.tex
+     pdflatex REPORTE_TECNICO.tex
+     etc.
+
+
+BÚSQUEDA RÁPIDA
+================================================================================
+
+¿Cómo instalo el proyecto?
+  → INSTALACION.txt (Opción 1 o 2)
+
+¿Cómo uso la aplicación?
+  → MANUAL_USUARIO.txt (Secciones 3-6)
+
+¿Qué son Jacobi y Gauss-Seidel?
+  → REPORTE_TECNICO.txt (Sección 2)
+
+¿Cómo funciona la aplicación internamente?
+  → DOCUMENTACION_CODIGO.md (Secciones 2-5)
+
+¿Cuáles son los 7 casos de prueba?
+  → CASOS_PRUEBA.txt (Secciones 2-8)
+
+¿Qué requisitos cumple el proyecto?
+  → EVIDENCIA_REQUISITOS.md
+
+¿Cuál es la estructura del código?
+  → DOCUMENTACION_CODIGO.md (Sección 3)
+
+¿Cómo sé si mi instalación es correcta?
+  → INSTALACION.txt (Sección "Verificación")
+
+¿Qué debo hacer si algo no funciona?
+  → INSTALACION.txt o MANUAL_USUARIO.txt (Sección "Problemas")
+
+
+CHECKLIST DE DOCUMENTACIÓN
+================================================================================
+
+Documentación de Instalación:
+  ✓ INSTALACION.txt - paso a paso
+  ✓ Opciones XAMPP y servidor remoto
+  ✓ Solución de problemas
+
+Documentación de Usuario:
+  ✓ MANUAL_USUARIO.txt - guía completa
+  ✓ Ejemplos de uso
+  ✓ Preguntas frecuentes
+  ✓ Gráficas explicadas
+
+Documentación Técnica:
+  ✓ REPORTE_TECNICO.txt - matemática y arquitectura
+  ✓ DOCUMENTACION_CODIGO.md - código fuente
+  ✓ Fundamentos de métodos iterativos
+  ✓ Pseudocódigo de algoritmos
+
+Documentación de Casos:
+  ✓ CASOS_PRUEBA.txt - todos los 7 casos
+  ✓ Especificaciones detalladas
+  ✓ Resultados esperados
+  ✓ Estrategia de selección
+
+Documentación General:
+  ✓ README.md - descripción proyecto
+  ✓ EVIDENCIA_REQUISITOS.md - cumplimiento
+  ✓ Este archivo (INDEX.txt)
+
+
+REQUISITOS CUBIERTOS
+================================================================================
+
+El proyecto cumple con:
+
+✓ Lenguajes: JavaScript (Chart.js, HTML5, CSS3)
+✓ Frameworks: Chart.js para gráficas
+✓ Backend: PHP OOP con 6 clases
+✓ Frontend: HTML5 + CSS3 moderno + JavaScript
+✓ Documentación: Completa en múltiples formatos
+✓ Casos de prueba: 7 casos documentados
+✓ Manual de usuario: Guía paso a paso
+✓ Reporte técnico: Fundamentos y arquitectura
+✓ Código comentado: DOCUMENTACION_CODIGO.md
+
+Ver: EVIDENCIA_REQUISITOS.md para detalles específicos
+
+
+CONTACTO Y SOPORTE
+================================================================================
+
+Para preguntas sobre:
+  • Instalación: Ver INSTALACION.txt
+  • Uso de la app: Ver MANUAL_USUARIO.txt
+  • Teoría matemática: Ver REPORTE_TECNICO.txt
+  • Código: Ver DOCUMENTACION_CODIGO.md
+  • Casos: Ver CASOS_PRUEBA.txt
+
+
+INFORMACIÓN DEL PROYECTO
+================================================================================
+
+Materia: Métodos Numéricos I
+Carrera: Ingeniería Informática
+Universidad: UMSA
+Fecha: Diciembre 2025
+Versión: 1.0
+Estado: Documentación Completa
+
+Autores:
+  • Quiroz [Apellido]
+  • Rocha [Apellido]
+  • Laura [Apellido]
+  • Callisaya [Apellido]
+
+
+PRÓXIMOS PASOS
+================================================================================
+
+1. Lee el documento que necesites según tu situación
+2. Si tienes dudas, consulta el índice de contenidos
+3. Usa Ctrl+F para buscar dentro de los documentos
+4. Si aún tienes problemas, revisa "Solución de Problemas"
+
+
+================================================================================
+Este índice te ayudará a navegar toda la documentación de manera eficiente.
+Última actualización: Diciembre 10, 2025
+================================================================================

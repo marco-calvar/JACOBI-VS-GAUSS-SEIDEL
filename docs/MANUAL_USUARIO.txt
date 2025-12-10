@@ -1,0 +1,369 @@
+================================================================================
+MANUAL DE USUARIO
+Sistema Comparativo de Métodos Iterativos
+Jacobi vs Gauss-Seidel
+================================================================================
+
+TABLA DE CONTENIDOS
+================================================================================
+1. Introducción
+2. Interfaz Principal
+3. Opción 1: Usar Casos de Prueba
+4. Opción 2: Ingreso Manual de Datos
+5. Interpretación de Resultados
+6. Interpretación de Gráficas
+7. Validaciones y Advertencias
+8. Ejemplos de Uso
+9. Consejos y Buenas Prácticas
+10. Preguntas Frecuentes
+11. Solución de Problemas
+
+
+1. INTRODUCCIÓN
+================================================================================
+
+Este manual proporciona una guía paso a paso para usar el Sistema Comparativo
+de Métodos Iterativos Jacobi vs Gauss-Seidel. No requiere conocimientos
+técnicos avanzados.
+
+
+2. INTERFAZ PRINCIPAL
+================================================================================
+
+2.1 Descripción General
+---
+La aplicación tiene tres secciones principales:
+  1. Página de Inicio: Bienvenida e información general
+  2. Casos de Prueba Rápidos: Sistemas predefinidos
+  3. Formulario de Entrada: Ingreso manual de datos
+
+2.2 Estructura de la Página
+---
+• Encabezado: Título y navegación
+• Área de contenido: Formularios e información
+• Resultados: Gráficas y análisis (aparece después de calcular)
+
+
+3. OPCIÓN 1: USAR CASOS DE PRUEBA
+================================================================================
+
+3.1 Paso 1: Seleccionar un Caso
+---
+En la página principal, verá botones con título y descripción.
+
+Botones disponibles:
+  • Sistema 3x3 - Diagonal Dominante
+  • Sistema 4x4 - Diagonal Dominante Moderada
+  • Sistema 2x2 - Simple
+  • Sistema 5x5 - Débilmente Diagonal Dominante
+  • Sistema 3x3 - No Diagonal Dominante
+  • Sistema 6x6 - Tamaño Mediano
+  • Sistema Tridiagonal 5x5
+
+Acción: Hacer clic en el botón del caso deseado
+
+3.2 Paso 2: Visualizar Datos Cargados
+---
+El formulario se completará automáticamente con:
+  • Dimensión del sistema
+  • Matriz A (coeficientes)
+  • Vector b (términos independientes)
+  • Tolerancia y máximo de iteraciones
+
+Nota: Puede modificar cualquier valor si lo desea
+
+3.3 Paso 3: Ejecutar Comparación
+---
+1. Hacer clic en botón "Comparar Métodos"
+2. Esperar a que se calculen los resultados
+3. Los resultados aparecerán en la misma página
+
+
+4. OPCIÓN 2: INGRESO MANUAL DE DATOS
+================================================================================
+
+4.1 Paso 1: Ingresar Dimensión
+---
+En campo "Dimensión (2-20)":
+  • Mínimo: 2
+  • Máximo: 20
+  • Recomendado: 3-6
+
+Acción: Hacer clic en el campo y seleccionar o escribir el valor
+Resultado: El formulario se generará automáticamente
+
+4.2 Paso 2: Ingresar Matriz A
+---
+Aparecerá una grilla de entrada con n×n campos.
+
+Cada campo es para un coeficiente a_ij.
+
+Valores permitidos:
+  • Positivos o negativos: -10.5, 3.14, etc.
+  • Números enteros: 5, -2, etc.
+
+Recomendación: Usar una matriz diagonal dominante para garantizar convergencia
+
+4.3 Paso 3: Ingresar Vector b
+---
+Ingresar los términos independientes.
+
+Una fila de n campos para el vector b.
+
+Pueden ser positivos o negativos.
+
+4.4 Paso 4: Configurar Parámetros
+---
+
+TOLERANCIA (ε):
+  • Por defecto: 0.0001 (recomendado)
+  • Valores típicos: 0.001 a 0.00001
+  • Mayor tolerancia: menos iteraciones pero menor precisión
+  • Menor tolerancia: más iteraciones pero mayor precisión
+
+MÁXIMO DE ITERACIONES:
+  • Por defecto: 1000
+  • Para n > 10: aumentar a 2000
+  • Previene cálculos infinitos
+
+4.5 Paso 5: Vector Inicial (Opcional)
+---
+Opción: "Usar Vector Inicial Personalizado"
+
+Si se marca:
+  • Aparecerán campos para ingresar x_0
+  
+Si no se marca:
+  • Se usa x_0 = [0, 0, ..., 0]
+
+4.6 Paso 6: Calcular
+---
+1. Hacer clic en botón "Comparar Métodos"
+2. El sistema calculará ambos métodos
+3. Los resultados aparecerán abajo del formulario
+
+
+5. INTERPRETACIÓN DE RESULTADOS
+================================================================================
+
+5.1 Sección: Solución del Sistema
+---
+Muestra el vector solución x.
+
+Características:
+  • Valores redondeados a 6 decimales
+  • Mismo resultado para ambos métodos
+  • Ejemplo: x = [1.234567, 2.345678, 3.456789]
+
+5.2 Sección: Detalles de Jacobi
+---
+Información específica del método Jacobi:
+  • Iteraciones: cuántos pasos fueron necesarios
+  • Error final: error relativo al terminar
+  • Vector solución: resultado del método Jacobi
+
+5.3 Sección: Detalles de Gauss-Seidel
+---
+Igual a Jacobi pero para el método de Gauss-Seidel.
+
+Típicamente requiere menos iteraciones.
+
+5.4 Análisis Comparativo
+---
+Tabla comparativa:
+
+MÉTRICA        │ JACOBI    │ GAUSS-SEIDEL
+───────────────┼───────────┼──────────────
+Iteraciones    │ Número    │ Número
+Tiempo (ms)    │ Valor     │ Valor
+Memoria (KB)   │ Estimado  │ Estimado
+
+
+6. INTERPRETACIÓN DE GRÁFICAS
+================================================================================
+
+6.1 Gráfica 1: Convergencia (Errores)
+---
+Tipo: Líneas
+
+Ejes:
+  • Eje X: Número de iteración (1, 2, 3, ...)
+  • Eje Y: Error relativo (escala logarítmica)
+
+Colores:
+  • Color azul: Jacobi
+  • Color verde: Gauss-Seidel
+
+Interpretación:
+  • Línea más empinada = convergencia más rápida
+  • Línea más baja = error menor
+  • Línea plana = convergencia alcanzada
+
+6.2 Gráfica 2: Métricas (Barras)
+---
+Tipo: Barras agrupadas
+
+Grupos:
+  • Iteraciones
+  • Tiempo
+  • Memoria
+
+Colores:
+  • Azul: Jacobi
+  • Verde: Gauss-Seidel
+
+Interpretación:
+  • Barra más corta = mejor desempeño
+  • Comparación visual directa
+
+
+7. VALIDACIONES Y ADVERTENCIAS
+================================================================================
+
+7.1 Mensajes de Error
+---
+
+ERROR: "La dimensión debe estar entre 2 y 20"
+  Solución: ingresar número en rango válido
+
+ERROR: "Todos los campos son requeridos"
+  Solución: completar todos los campos del formulario
+
+ERROR: "Elemento diagonal es cero o muy pequeño"
+  Solución: no se puede resolver, cambiar matriz
+
+ERROR: "Sistema no tiene solución"
+  Solución: matriz singular, cambiar valores
+
+7.2 Mensajes de Advertencia
+---
+
+⚠️ "Matriz NO es diagonal dominante"
+  • Significado: convergencia no garantizada
+  • Acción: aumentar tolerancia o máx iteraciones
+
+⚠️ "Tolerancia muy pequeña"
+  • Significado: puede requerir muchas iteraciones
+  • Acción: aumentar tolerancia si hay timeout
+
+⚠️ "Máximo de iteraciones alcanzado"
+  • Significado: no convergió en el límite
+  • Acción: aumentar máximo iteraciones
+
+
+8. EJEMPLOS DE USO
+================================================================================
+
+8.1 Ejemplo 1: Sistema Simple 2x2
+---
+Dimensión: 2
+Matriz A: [4 1; 1 3]
+Vector b: [1, 2]
+Tolerancia: 0.0001
+Máx iteraciones: 1000
+
+Resultado esperado: Sistema convergente, ambos métodos
+
+8.2 Ejemplo 2: Comparar Jacobi vs Gauss-Seidel
+---
+1. Usar caso predefinido: "Sistema 4x4 - Diagonal Dominante Moderada"
+2. Ejecutar comparación
+3. Observar en gráficas: Gauss-Seidel converge más rápido
+
+8.3 Ejemplo 3: Sistema sin Diagonal Dominancia
+---
+1. Usar caso: "Sistema 3x3 - No Diagonal Dominante"
+2. Sistema puede no converger
+3. Ver advertencia en resultados
+4. Intentar aumentar máx iteraciones
+
+
+9. CONSEJOS Y BUENAS PRÁCTICAS
+================================================================================
+
+9.1 Para Garantizar Convergencia
+---
+1. Asegurar que matriz sea diagonal dominante
+2. Usar tolerancia razonable: 10^-4 a 10^-6
+3. Máximo iteraciones: al menos 1000
+
+9.2 Para Mejor Precisión
+---
+1. Reducir tolerancia (ej: 10^-6)
+2. Aumentar máximo iteraciones
+3. Usar matriz bien acondicionada
+
+9.3 Para Mejor Rendimiento
+---
+1. Aumentar tolerancia (menos iteraciones)
+2. Usar Gauss-Seidel (converge más rápido)
+3. Sistemas pequeños (n < 20)
+
+
+10. PREGUNTAS FRECUENTES
+================================================================================
+
+P: ¿Cuál método es mejor?
+R: Gauss-Seidel típicamente es más rápido, pero Jacobi es paralelizable.
+   Depende del sistema específico.
+
+P: ¿Qué pasa si no converge?
+R: 
+   1. Verificar que matriz sea diagonal dominante
+   2. Aumentar máximo iteraciones
+   3. Aumentar tolerancia
+   4. Cambiar vector inicial
+
+P: ¿Cuál es la máxima dimensión?
+R: Sistema permite hasta n = 20, pero recomendado n ≤ 10 para mejor desempeño.
+
+P: ¿Puedo usar números complejos?
+R: No, sistema solo soporta números reales.
+
+P: ¿Dónde se guarda la solución?
+R: Las soluciones se muestran en pantalla. Copiar de los resultados si necesita.
+
+
+11. SOLUCIÓN DE PROBLEMAS
+================================================================================
+
+Problema: Gráficas no aparecen
+---
+1. Limpiar caché: Ctrl+F5
+2. Verificar conexión internet
+3. Abrir consola (F12) para errores
+
+Problema: Cálculos muy lentos
+---
+1. Aumentar tolerancia
+2. Reducir máximo iteraciones
+3. Usar sistema más pequeño (n < 10)
+
+Problema: Resultados incorrectos
+---
+1. Verificar que matriz sea válida
+2. Comprobar valores ingresados
+3. Intentar caso predefinido
+
+Problema: Botones no responden
+---
+1. Actualizar página (F5)
+2. Limpiar caché del navegador
+3. Probar en otro navegador
+
+
+SOPORTE Y AYUDA
+================================================================================
+
+Para reportar problemas o solicitar ayuda:
+• Revisar sección "Preguntas Frecuentes"
+• Contactar administrador del sistema
+• Revisar documentación técnica
+• Consultar REPORTE_TECNICO.txt para fundamentos
+
+
+================================================================================
+Última actualización: Diciembre 10, 2025
+Versión: 1.0
+Estado: Completado
+================================================================================

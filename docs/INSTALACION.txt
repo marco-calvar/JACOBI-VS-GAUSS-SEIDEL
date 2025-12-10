@@ -1,0 +1,190 @@
+================================================================================
+INSTRUCCIONES DE INSTALACIÓN
+Sistema Comparativo - Jacobi vs Gauss-Seidel
+================================================================================
+
+REQUISITOS PREVIOS
+================================================================================
+• Sistema Operativo: Windows, macOS o Linux
+• Servidor Web: Apache 2.4+ o similar
+• PHP: Versión 7.4 o superior
+• Navegador Web: Moderno (Chrome, Firefox, Edge, Safari)
+• Git: (Opcional, para clonar el repositorio)
+
+
+OPCIÓN 1: INSTALACIÓN LOCAL (XAMPP/WAMP)
+================================================================================
+
+Paso 1: Descargar e Instalar XAMPP
+---
+1. Ir a https://www.apachefriends.org/
+2. Descargar XAMPP para tu sistema operativo
+3. Instalar en la ubicación predeterminada
+
+Paso 2: Obtener el Proyecto
+---
+Opción A - Descargar ZIP y extraer:
+  Descargar desde el repositorio y extraer en:
+  • Windows: C:\xampp\htdocs\proyecto
+  • Linux/Mac: /opt/lampp/htdocs/proyecto
+
+Opción B - Clonar desde Git:
+  cd C:\xampp\htdocs
+  git clone https://github.com/usuario/proyecto.git
+  cd proyecto
+
+Paso 3: Configurar XAMPP
+---
+1. Abrir XAMPP Control Panel
+2. Hacer clic en "Start" para Apache
+3. Verificar que Apache inicie correctamente (color verde)
+
+Paso 4: Acceder a la Aplicación
+---
+1. Abrir navegador web
+2. Ir a: http://localhost/proyecto
+3. Debería ver la página de bienvenida
+
+
+OPCIÓN 2: INSTALACIÓN EN SERVIDOR WEB PROFESIONAL
+================================================================================
+
+Requisitos:
+---
+• Acceso SSH al servidor
+• PHP 7.4+ instalado
+• Permisos de escritura en htdocs
+
+Pasos de Instalación:
+---
+# 1. Conectar al servidor
+ssh usuario@example.com
+
+# 2. Navegar a htdocs
+cd /var/www/html
+
+# 3. Clonar el proyecto
+git clone https://github.com/usuario/proyecto.git
+cd proyecto
+
+# 4. Configurar permisos
+chmod -R 755 .
+chmod -R 777 docs/
+
+# 5. Verificar PHP
+php -v
+# Debe mostrar: PHP 7.4.0 o superior
+
+# 6. Acceder por navegador
+# http://example.com/proyecto
+
+
+VERIFICACIÓN DE INSTALACIÓN
+================================================================================
+
+Checklist:
+---
+✓ Apache está corriendo
+✓ PHP está instalado (versión 7.4+)
+✓ Archivos están en la carpeta correcta
+✓ Página de inicio carga sin errores
+✓ Los botones de casos de prueba funcionan
+✓ Los gráficos se renderizan correctamente
+
+Pruebas de Funcionamiento:
+---
+# Verificar versión de PHP
+php -v
+
+# Probar un caso de prueba:
+# 1. Abrir http://localhost/proyecto
+# 2. Hacer clic en "Sistema 3x3 - Diagonal Dominante"
+# 3. Hacer clic en "Comparar"
+# 4. Verificar que aparezcan resultados y gráficos
+
+
+SOLUCIÓN DE PROBLEMAS
+================================================================================
+
+Problema: Error 404 (Página no encontrada)
+---
+Solución:
+• Verificar que el proyecto esté en la carpeta correcta
+• Reiniciar Apache
+• Comprobar que la URL es correcta: http://localhost/proyecto
+
+Problema: Error 500 (Error interno del servidor)
+---
+Solución:
+• Verificar que PHP esté instalado: php -v
+• Revisar logs de Apache: C:\xampp\apache\logs\error.log
+• Verificar sintaxis PHP: php -l archivo.php
+
+Problema: Gráficos no aparecen
+---
+Solución:
+• Limpiar caché del navegador (Ctrl+F5)
+• Verificar conexión a internet (Chart.js usa CDN)
+• Abrir consola del navegador (F12) para ver errores
+
+Problema: Resultados no calculan
+---
+Solución:
+• Verificar que todos los campos del formulario tengan valores
+• Asegurarse que la tolerancia sea positiva
+• Revisar que la matriz sea válida (sin NaN o Infinity)
+
+
+ESTRUCTURA DE CARPETAS
+================================================================================
+
+proyecto/
+├── index.php                    # Página de inicio
+├── sistema_comparativo.php      # Aplicación principal
+├── procesar.php                 # (Opcional) procesamiento
+├── clases/                      # Clases PHP
+│   ├── Jacobi.php
+│   ├── GaussSeidel.php
+│   ├── Comparador.php
+│   ├── Validador.php
+│   ├── AnalizadorAvanzado.php
+│   └── CasosPrueba.php
+├── css/
+│   └── estilos.css              # Estilos CSS3
+├── js/
+│   └── script.js                # JavaScript interactivo
+└── docs/                        # Documentación
+    ├── INSTALACION.txt
+    ├── REPORTE_TECNICO.txt
+    ├── MANUAL_USUARIO.txt
+    └── CASOS_PRUEBA.txt
+
+
+CONFIGURACIÓN AVANZADA (OPCIONAL)
+================================================================================
+
+Habilitar HTTPS en Desarrollo:
+---
+• Editar httpd-ssl.conf en Apache
+• Descomentar mod_ssl
+• Reiniciar Apache
+
+Optimizar Rendimiento:
+---
+1. Habilitar opcache en PHP
+2. Compresión gzip en Apache
+3. Cacheo de navegador para CSS/JS
+
+
+SOPORTE Y CONTACTO
+================================================================================
+
+Para reportar problemas o solicitar asistencia:
+• Email: soporte@ejemplo.com
+• GitHub Issues: https://github.com/usuario/proyecto/issues
+• Wiki: https://github.com/usuario/proyecto/wiki
+
+================================================================================
+Última actualización: Diciembre 10, 2025
+Versión: 1.0
+================================================================================
