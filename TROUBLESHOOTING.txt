@@ -1,0 +1,490 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    GUÍA DE SOLUCIÓN DE PROBLEMAS
+                 Sistema Comparativo Jacobi vs Gauss-Seidel
+═══════════════════════════════════════════════════════════════════════════════
+
+Este documento ayuda a resolver problemas comunes durante la instalación y uso.
+
+
+ÍNDICE
+──────────────────────────────────────────────────────────────────────────────
+1. Problemas de Instalación
+2. Problemas de Ejecución
+3. Problemas en el Navegador
+4. Errores Matemáticos
+5. Preguntas Frecuentes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+1. PROBLEMAS DE INSTALACIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "php: command not found" / "PHP no es reconocido"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: PHP no está instalado o no está en el PATH del sistema
+
+SOLUCIÓN A - Instalar PHP:
+
+  Windows:
+    1. Ve a: https://www.php.net/downloads
+    2. Descarga "Windows Installer" (versión 8.1 o superior)
+    3. Ejecuta el instalador
+    4. Cuando pregunte, haz clic en "Folder to install to"
+       Usa: C:\php
+    5. Completa la instalación
+    6. Reinicia tu computadora
+
+  macOS:
+    Abre Terminal y escribe:
+      brew install php
+    (Necesitas tener Homebrew instalado)
+
+  Linux (Ubuntu/Debian):
+    Abre Terminal y escribe:
+      sudo apt-get update
+      sudo apt-get install php
+
+SOLUCIÓN B - Agregar PHP al PATH:
+
+  Windows (Si ya tienes PHP instalado):
+    1. Haz clic derecho en "Mi PC" o "Este Equipo" → Propiedades
+    2. Click "Configuración avanzada del sistema"
+    3. Click "Variables de entorno"
+    4. En "Variables de usuario" click "Nueva"
+       Variable: PATH
+       Valor: C:\php (o donde esté tu PHP)
+    5. Click OK tres veces
+    6. Abre una terminal NUEVA y prueba: php -v
+
+VERIFICACIÓN:
+  Abre una terminal NUEVA y escribe:
+    php -v
+  Debes ver: PHP 8.x.x (cli) ...
+
+
+PROBLEMA: "Error en SETUP.bat o SETUP.ps1"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Script no tiene permiso de ejecución o PowerShell está bloqueado
+
+SOLUCIÓN A - Para SETUP.bat:
+
+  1. Abre CMD (no PowerShell)
+  2. Navega a la carpeta del proyecto:
+       cd C:\ruta\al\proyecto
+  3. Ejecuta:
+       SETUP.bat
+
+SOLUCIÓN B - Para SETUP.ps1:
+
+  1. Abre PowerShell como ADMINISTRADOR
+  2. Navega a la carpeta del proyecto:
+       cd C:\ruta\al\proyecto
+  3. Permite ejecutar scripts:
+       Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  4. Ejecuta:
+       .\SETUP.ps1
+
+SOLUCIÓN C - Manualmente:
+
+  1. Abre CMD o PowerShell
+  2. Navega a la carpeta del proyecto
+  3. Ejecuta:
+       php -S localhost:8000
+
+
+PROBLEMA: "El archivo SETUP.sh dice 'Permiso denegado'"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: El script no tiene permisos de ejecución
+
+SOLUCIÓN:
+
+  1. Abre Terminal en la carpeta del proyecto
+  2. Ejecuta:
+       chmod +x SETUP.sh
+  3. Luego ejecuta:
+       ./SETUP.sh
+
+
+PROBLEMA: "Archivos no encontrados" en el setup
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: No descargaste/clonaste correctamente el proyecto
+
+SOLUCIÓN:
+
+  Opción A - Desde GitHub:
+    git clone https://github.com/marco-calvar/JACOBI-VS-GAUSS-SEIDEL.git
+    cd JACOBI-VS-GAUSS-SEIDEL
+
+  Opción B - Descargado como ZIP:
+    1. Descarga el ZIP desde GitHub
+    2. Descomprime en una carpeta
+    3. Abre la carpeta
+    4. Verifica que veas archivos: index.php, SETUP.bat, etc.
+
+  VERIFICACIÓN:
+    Debes ver EXACTAMENTE estos archivos en la carpeta raíz:
+      ✓ index.php
+      ✓ bienvenida.php
+      ✓ sistema_comparativo.php
+      ✓ procesar.php
+      ✓ SETUP.bat
+      ✓ SETUP.ps1
+      ✓ SETUP.sh
+      ✓ QUICK_START.txt
+      ✓ clases/ (carpeta)
+      ✓ css/ (carpeta)
+      ✓ js/ (carpeta)
+      ✓ docs/ (carpeta)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. PROBLEMAS DE EJECUCIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "Puerto 8000 en uso" / "Address already in use"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Otro programa está usando el puerto 8000
+
+SOLUCIÓN A - Usar otro puerto:
+
+  En lugar de:
+    php -S localhost:8000
+
+  Usa:
+    php -S localhost:3000
+  
+  Luego accede a: http://localhost:3000
+
+SOLUCIÓN B - Liberar el puerto 8000:
+
+  Windows:
+    1. Abre CMD como ADMINISTRADOR
+    2. Ejecuta:
+         netstat -ano | findstr :8000
+    3. Anota el PID (última columna)
+    4. Mata el proceso:
+         taskkill /PID [PID] /F
+       (Reemplaza [PID] con el número que anotaste)
+
+  Linux/macOS:
+    1. Abre Terminal
+    2. Ejecuta:
+         lsof -i :8000
+    3. Anota el PID
+    4. Mata el proceso:
+         kill -9 [PID]
+
+
+PROBLEMA: "php -S no inicia" / No se ve el mensaje de "listening"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Problema con PHP o permisos de carpeta
+
+SOLUCIÓN:
+
+  1. Verifica que estés EN la carpeta correcta:
+       pwd  (Linux/Mac)
+       cd   (Windows)
+       Debes ver: C:\...\proyecto o /path/to/proyecto
+
+  2. Asegúrate de que index.php existe:
+       ls -la index.php  (Linux/Mac)
+       dir index.php     (Windows)
+
+  3. Intenta con ruta absoluta:
+       php -S localhost:8000 c:/ruta/completa/proyecto/index.php
+
+  4. Prueba con IP externa:
+       php -S 0.0.0.0:8000
+       Luego accede a: http://127.0.0.1:8000
+
+
+PROBLEMA: "Connection refused" cuando abro http://localhost:8000
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: El servidor no está corriendo o se ejecutó en otro puerto
+
+SOLUCIÓN:
+
+  1. Verifica que veas en la terminal:
+       "Listening on http://localhost:8000"
+
+  2. Si no ves ese mensaje, vuelve al paso anterior
+
+  3. Si ves el mensaje pero conexión rechazada:
+     - Espera 3 segundos y recarga (F5)
+     - Intenta en una ventana incógnito
+     - Intenta en otro navegador (Chrome, Firefox, Safari)
+
+  4. Verifica que no hay firewall bloqueando:
+     Windows Defender → Permitir en red
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. PROBLEMAS EN EL NAVEGADOR
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "Página en blanco" o "Error 500"
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Error en el código PHP o archivo no encontrado
+
+SOLUCIÓN:
+
+  1. Abre la Consola del Navegador (F12)
+  2. Mira la pestaña "Console" y "Network"
+  3. Busca errores en rojo
+  4. Anota el mensaje de error exacto
+
+  ERRORES COMUNES:
+
+    "Division by zero" en Jacobi.php línea XX:
+      → La diagonal de la matriz contiene ceros
+      → Usa un caso predefinido (Caso 1, 2, 3, 4, 6 ó 7)
+      → Evita Caso 5 (está diseñado para fallar)
+
+    "Array key not found":
+      → Faltan campos en el formulario
+      → Intenta con un caso predefinido
+
+    "Fatal error: Class not found":
+      → Faltan archivos en carpeta clases/
+      → Verifica que clases/ tenga 6 archivos .php
+
+SOLUCIÓN PASO A PASO:
+
+  1. Cierra el navegador completamente
+  2. Detén el servidor (Ctrl+C en terminal)
+  3. Espera 5 segundos
+  4. Abre carpeta proyecto → Verifica que clases/ tenga 6 .php
+  5. Inicia de nuevo:
+       php -S localhost:8000
+  6. Abre navegador: http://localhost:8000
+  7. Recarga (Ctrl+F5 para limpiar caché)
+
+
+PROBLEMA: Estilos CSS no cargan (página se ve fea)
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Ruta a CSS incorrecta
+
+SOLUCIÓN:
+
+  1. Abre Inspector (F12 → Network)
+  2. Recarga la página (F5)
+  3. Busca estilos.css en rojo
+  4. Si está en rojo, el archivo no se encontró
+
+  CAUSAS Y SOLUCIONES:
+
+    Si estás en http://localhost:8000/bienvenida.php:
+      - Verifica que existe: css/estilos.css
+      - En bienvenida.php, la ruta debe ser: href="css/estilos.css"
+      - NO debe ser: href="/css/estilos.css"
+
+    Si estás en carpeta diferente:
+      - Usa rutas relativas: ../css/estilos.css
+
+
+PROBLEMA: Las gráficas no se muestran (área en blanco)
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Chart.js o datos no cargaron correctamente
+
+SOLUCIÓN:
+
+  1. Abre Inspector (F12 → Console)
+  2. Busca errores en rojo relacionados con "Chart"
+  3. Verifica que haya datos en la respuesta JSON
+  4. Intenta con Caso 1 predefinido (genera gráficas simples)
+
+  VERIFICACIÓN DE DATOS:
+
+    1. Abre Inspector (F12 → Network)
+    2. Haz clic en "Seleccionar Caso 1"
+    3. Busca POST a procesar.php
+    4. Haz clic en esa fila
+    5. Mira "Response" → Debe tener mucho JSON con números
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. ERRORES MATEMÁTICOS
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "División por cero" en Jacobi.php línea 48
+───────────────────────────────────────────────────────────────────────────────
+
+CAUSA: Diagonal principal de la matriz tiene ceros
+
+EJEMPLO:
+  Matriz A = [0  3  1]
+             [2  1  1]
+             [1  1  5]
+
+  a[0][0] = 0  ← PROBLEMA: No puedes dividir por 0
+
+SOLUCIÓN:
+
+  1. Usa un caso predefinido que FUNCIONA:
+     ✓ Caso 1 (diagonal completamente dominante)
+     ✓ Caso 2 (diagonal dominante moderada)
+     ✓ Caso 3 (matriz pequeña, diagonal bien)
+     ✓ Caso 4 (comparación de métodos)
+     ✓ Caso 6 (matriz 6x6, diagonal bien)
+     ✓ Caso 7 (tridiagonal, diagonal bien)
+
+  2. Evita:
+     ✗ Caso 5 (intencionalmente NO diagonal dominante)
+
+  3. Si ingresas tu propia matriz:
+     - Asegúrate que NINGÚN elemento diagonal sea 0
+     - Mejor aún: |a[i][i]| > suma de otros elementos en esa fila
+       Ejemplo: a[0][0]=5, a[0][1]=1, a[0][2]=1
+               |5| > |1+1| ✓ Diagonal dominante
+
+
+PROBLEMA: "Jacobi y Gauss-Seidel dan soluciones diferentes"
+───────────────────────────────────────────────────────────────────────────────
+
+RESPUESTA: NORMAL Y ESPERADO
+
+EXPLICACIÓN:
+
+  Caso 1: Ambos CONVERGEN, pero GS converge ~2x más rápido
+  Caso 5: Ambos DIVERGEN (están mal diseñados)
+
+  Las soluciones SON DIFERENTES porque:
+    - Jacobi usa valores ANTERIORES: x_i^(k)
+    - Gauss-Seidel usa valores NUEVOS disponibles: x_i^(k+1)
+
+  Ambos tienden a la MISMA SOLUCIÓN FINAL, pero:
+    - Gauss-Seidel lo alcanza en menos iteraciones
+    - Jacobi puede paralelizarse mejor
+
+  VERIFICACIÓN:
+    Si ve algo como:
+      Jacobi:        x = [1.99996, 2.00005, 1.99999]
+      Gauss-Seidel:  x = [1.99998, 2.00002, 1.99997]
+
+      ¡Excelente! Ambos convergen al mismo valor [2, 2, 2]
+
+
+PROBLEMA: "Las iteraciones de Jacobi siempre son más que Gauss-Seidel"
+───────────────────────────────────────────────────────────────────────────────
+
+RESPUESTA: CORRECTO Y TEÓRICAMENTE ESPERADO
+
+EXPLICACIÓN:
+
+  Gauss-Seidel SIEMPRE converge en ≤ iteraciones que Jacobi
+  
+  Regla de oro:
+    iteraciones(GS) ≈ iteraciones(Jacobi) / 2
+  
+  Ejemplo:
+    Jacobi:        60 iteraciones
+    Gauss-Seidel:  30 iteraciones (aprox)
+
+  ¿Por qué? Porque GS reutiliza valores nuevos más rápidamente.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. PREGUNTAS FRECUENTES
+═══════════════════════════════════════════════════════════════════════════════
+
+P: ¿Cómo elimino el servidor sin usar Ctrl+C?
+
+R: Usa la solución anterior (Problema: Puerto 8000 en uso)
+
+
+P: ¿Puedo usar Apache/Nginx en lugar de php -S?
+
+R: Sí, copia la carpeta a:
+   - Windows XAMPP: C:\xampp\htdocs\jacobi-gauss-seidel
+   - Linux Apache: /var/www/html/jacobi-gauss-seidel
+   Accede a: http://localhost/jacobi-gauss-seidel
+
+
+P: ¿Qué pasa si ingreso una matriz no cuadrada?
+
+R: El sistema rechazará (validación en Validador.php)
+   Debes ingresar m filas y m columnas (+ 1 para vector b)
+
+
+P: ¿Cuál es el máximo tamaño de matriz soportado?
+
+R: Teóricamente ilimitado, prácticamente:
+   - Recomendado: hasta 20x20
+   - Máximo: hasta 100x100 (depende de tolerancia)
+
+
+P: ¿Qué tolerancia por defecto usa el sistema?
+
+R: 1e-6 (0.000001)
+   Esto significa: |x_i^(k) - x_i^(k-1)| < 0.000001
+
+
+P: ¿Puedo cambiar la tolerancia?
+
+R: Actualmente NO (está fija en código)
+   Para modificar, edita procesar.php línea ~45:
+   const TOLERANCIA = 1e-6;
+
+
+P: ¿Está optimizado para producción?
+
+R: NO, está optimizado para EDUCACIÓN
+   Para producción, usa Apache/Nginx + PHP-FPM
+   Y considera caching/optimizaciones
+
+
+P: ¿Funciona en teléfono móvil?
+
+R: Sí, pero:
+   1. Necesitas servidor en red local
+   2. Usa tu IP: http://192.168.x.x:8000
+   3. Los números pueden ser pequeños en pantalla
+
+
+P: ¿Qué navegadores son soportados?
+
+R: Chrome, Firefox, Safari, Edge (cualquier moderno)
+   Requieren: JavaScript habilitado, HTML5 completo
+
+
+P: ¿Cómo copio los resultados?
+
+R: Selecciona el texto con el mouse y copia (Ctrl+C)
+   Las gráficas se pueden descargar con botón derecho
+
+
+P: ¿Hay validación en el cliente o servidor?
+
+R: AMBAS:
+   - JavaScript valida mientras escribes
+   - PHP valida cuando envías (más importante)
+
+
+P: ¿Se envían datos a internet?
+
+R: NO, todo está en localhost
+   Los datos no dejan tu computadora
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¿PROBLEMA NO RESUELTO?
+
+1. Lee el error exacto en Console (F12)
+2. Busca el nombre del archivo (ej: "procesar.php")
+3. Verifica que el archivo existe en la carpeta
+4. Compara tu estructura con la del README_INSTALACION.md
+
+CONTACTO:
+  GitHub: https://github.com/marco-calvar/JACOBI-VS-GAUSS-SEIDEL
+  Correo: ronaldo.calvar@gmail.com
